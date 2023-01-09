@@ -204,8 +204,8 @@ function control()
             window.open('./huizhanonline.html');
         }
 
-        if (e.key=='l'){
-            window.open='./virtual_human.html'
+        if (e.key=='p'){
+            window.open('./virtual_human.html');
         }
     
         //跟随测试

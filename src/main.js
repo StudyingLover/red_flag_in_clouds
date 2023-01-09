@@ -202,6 +202,10 @@ function control()
         if (e.key=='y'){
             window.open('./huizhanonline.html');
         }
+
+        if (e.key=='p'){
+            window.location.href='./virtual_human.html'
+        }
     
         //跟随测试
         if (e.key=='i'){

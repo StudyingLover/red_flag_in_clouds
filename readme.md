@@ -10,16 +10,25 @@
 ```
 .
 +--favicon.svg
-+--huizhanonline.html
 +--index.html
++--notfound.html
 +--readme.md
 │
-+--resources
++--css
+│  +--notfound.css
+│
+└─html
+│  +--GY404.html
+│  +--huizhanonline.html
+│  +--virtualanchor.html
+
+└─resources
 │  +--sky.hdr
 │  +--sky2.hdr
 │  +--video01.mp4
 │  +--video02.mp4
 │  +--yanhua.mp4
+│  +--virtual_human.mp4
 |  +--models
 │  |  +--donuts.glb
 │  |  +--donuts_noanimation.glb

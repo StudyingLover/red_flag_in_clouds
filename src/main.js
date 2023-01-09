@@ -194,17 +194,18 @@ function control()
         }
     
         //网页跳转功能测试
-        //新打开一个页面打开网页
+        //当前页面打开网页
         if (e.key==='t') {
             window.location.href='./huizhanonline.html';
         }
-        //当前页面打开网页
+
+        //新打开一个页面打开网页
         if (e.key=='y'){
             window.open('./huizhanonline.html');
         }
 
         if (e.key=='p'){
-            window.location.href='./virtual_human.html'
+            window.open='./virtual_human.html'
         }
     
         //跟随测试

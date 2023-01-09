@@ -412,7 +412,7 @@ function animate() {
 
     renderer.render(scene, camera);
     
-    guideMesh.rotateY(-0.1);
+    // guideMesh.rotateY(-0.1);
 
     //调用onPointerMove
     onPointerMove();

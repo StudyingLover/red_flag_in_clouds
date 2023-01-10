@@ -219,17 +219,15 @@ function control()
             scene.add(playerMesh);
         }
     })
+    window.addEventListener('keyup', (e) => {
+        if (e.key === 'w') {
+            crossPlay(actionWalk, actionIdle);
+            isWalk = false;
+        }
+    });
 }
 control();
 
-
-
-window.addEventListener('keyup', (e) => {
-    if (e.key === 'w') {
-        crossPlay(actionWalk, actionIdle);
-        isWalk = false;
-    }
-});
 
 //获取鼠标坐标
 let preClientX;

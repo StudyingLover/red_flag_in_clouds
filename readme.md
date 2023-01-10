@@ -4,7 +4,8 @@
 
 ## 项目依赖
 - `./src/three.js`
-- `.//src/GLTFLoader.js`
+- `./src/GLTFLoader.js`
+- `./src/joystick.js`
 
 ## 文件结构
 ```
@@ -44,6 +45,7 @@
 │  +--test.js
 │  +--three.js
 │  +--vite-env.d.ts
+│  +--joystick.js
 ```
 
 ## 人物操作

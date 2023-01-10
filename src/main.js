@@ -58,7 +58,7 @@ new THREE.GLTFLoader().load('../resources/models/player.glb', (gltf) => {
     playerMesh = gltf.scene;
     scene.add(gltf.scene);
 
-    playerMesh.traverse((child)=>{
+    playerMesh.traverse((child) => {
         child.receiveShadow = true;
         child.castShadow = true;
     })
@@ -102,8 +102,7 @@ new THREE.GLTFLoader().load('../resources/models/player.glb', (gltf) => {
 new THREE.GLTFLoader().load('../resources/models/player.glb', (guide) => {
     guideMesh = guide.scene;
     scene.add(guide.scene);
-
-    guideMesh.traverse((child)=>{
+    guideMesh.traverse((child) => {
         child.receiveShadow = true;
         child.castShadow = true;
     })
@@ -129,40 +128,39 @@ new THREE.GLTFLoader().load('../resources/models/player.glb', (guide) => {
 });
 
 //鼠标测试
-window.addEventListener( 'click', function(e){
-    if(e.button===0){
+window.addEventListener('click', function (e) {
+    if (e.button === 0) {
         // console.log("点击了鼠标左键");
         //网页跳转测试
         // window.location.href='http://blog.yoodb.com';
         // window.open('http://blog.yoodb.com', '_blank' + new Date().getTime())
     }
-    if(e.button===2){
+    if (e.button === 2) {
         // console.log("点击了鼠标右键");
-        
+
     }
-} );
+});
 
 let isWalk = false;
 const playerHalfHeight = new THREE.Vector3(0, 0.8, 0);
-function control()
-{
+function control() {
     window.addEventListener('keydown', (e) => {
         if (e.key === 'w') {
             // playerMesh.translateZ(0.1);
-    
+
             const curPos = playerMesh.position.clone();
             playerMesh.translateZ(1);
             const frontPos = playerMesh.position.clone();
             playerMesh.translateZ(-1);
-            
+
             const frontVector3 = frontPos.sub(curPos).normalize()
-    
+
             const raycasterFront = new THREE.Raycaster(playerMesh.position.clone().add(playerHalfHeight), frontVector3);
             const collisionResultsFrontObjs = raycasterFront.intersectObjects(scene.children);
             if (collisionResultsFrontObjs && collisionResultsFrontObjs[0] && collisionResultsFrontObjs[0].distance > 1) {
                 playerMesh.translateZ(0.1);
             }
-            
+
             if (!isWalk) {
                 crossPlay(actionIdle, actionWalk);
                 isWalk = true;
@@ -171,50 +169,50 @@ function control()
         if (e.key === 's') {
             playerMesh.translateZ(-0.1);
         }
-    
-        if (e.key ==='a') {
+
+        if (e.key === 'a') {
             playerMesh.rotateY(0.1);
         }
-        if (e.key ==='d') {
+        if (e.key === 'd') {
             playerMesh.rotateY(-0.1);
         }
-    
+
         //传送功能测试
-        if (e.key==='q') {
+        if (e.key === 'q') {
             playerMesh.position.set(5, 5, 11.5);
             // playerMesh.position.set(6, 5, 11.5);
             // playerMesh.position.set(7, 5, 11.5);
         }
-        if (e.key==='e') {
+        if (e.key === 'e') {
             playerMesh.position.set(0, 0, 11.5);
         }
-    
-        if (e.key==='r'){
-            guideMesh.position.set(5,0,5);
+
+        if (e.key === 'r') {
+            guideMesh.position.set(5, 0, 5);
         }
-    
+
         //网页跳转功能测试
         //当前页面打开网页
-        if (e.key==='t') {
-            window.location.href='./html/huizhanonline.html';
+        if (e.key === 't') {
+            window.location.href = './html/huizhanonline.html';
         }
 
         //新打开一个页面打开网页
-        if (e.key=='y'){
+        if (e.key == 'y') {
             window.open('./html/huizhanonline.html');
         }
 
-        if (e.key=='p'){
+        if (e.key == 'p') {
             window.open('./html/virtual_human.html');
         }
-    
+
         //跟随测试
-        if (e.key=='i'){
+        if (e.key == 'i') {
             // playerMesh.position.set(4,0,13);
             guideMesh.add(playerMesh);
             // playerMesh.position.set(0,0,-7);
         }
-        if(e.key=='o'){
+        if (e.key == 'o') {
             guideMesh.remove(playerMesh);
             scene.add(playerMesh);
         }
@@ -344,56 +342,56 @@ function crossPlay(curAction, newAction) {
 }
 
 //检测鼠标点击到了哪个物体
-function onPointerMove()
-{
-    let mouse= new THREE.Vector2();
-    let raycaster= new THREE.Raycaster();
+function onPointerMove() {
+    let mouse = new THREE.Vector2();
+    let raycaster = new THREE.Raycaster();
     window.addEventListener('mousemove', (event) => {
-    // calculate mouse position in normalized device coordinates
-    // parameter event is MouseEvent
-    if (event.changedTouches && event.changedTouches.length > 0) {
-        event.clientX = event.changedTouches[0].clientX;
-        event.clientY = event.changedTouches[0].clientY;
-    }
+        // calculate mouse position in normalized device coordinates
+        // parameter event is MouseEvent
+        if (event.changedTouches && event.changedTouches.length > 0) {
+            event.clientX = event.changedTouches[0].clientX;
+            event.clientY = event.changedTouches[0].clientY;
+        }
 
-    mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-    mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+        mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+        mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
 
-    raycaster.setFromCamera(mouse, camera);
+        raycaster.setFromCamera(mouse, camera);
 
-    const intersects = raycaster.intersectObjects(scene.children, true);
+        const intersects = raycaster.intersectObjects(scene.children, true);
 
-    if (intersects.length > 0) {
-        const intersect = intersects[0];
-        mouse_on_object_name=intersect.object.name;
-        console.log(intersect.object.name);
-        // if (intersect.object.name === '2023') {
-        //     crossPlay(actionWalk, actionIdle);
-        //     isWalk = false;
-        //     guideMesh.position.set(5,0,5);
-        // }
-        // if (intersect.object.name === '大屏幕01' || intersect.object.name === '大屏幕02' || intersect.object.name === '操作台屏幕' || intersect.object.name === '环形屏幕2') {
-        //     crossPlay(actionWalk, actionIdle);
-        //     isWalk = false;
-        //     guideMesh.position.set(5,0,5);
-        // }
-        // if (intersect.object.name === '环形屏幕') {
-        //     crossPlay(actionWalk, actionIdle);
-        //     isWalk = false;
-        //     guideMesh.position.set(5,0,5);
-        // }
-        // if (intersect.object.name === '柱子屏幕') {
-        //     crossPlay(actionWalk, actionIdle);
-        //     isWalk = false;
-        //     guideMesh.position.set(5,0,5);
-        // }
-    }});
+        if (intersects.length > 0) {
+            const intersect = intersects[0];
+            mouse_on_object_name = intersect.object.name;
+            // console.log(intersect.object.name);
+            // if (intersect.object.name === '2023') {
+            //     crossPlay(actionWalk, actionIdle);
+            //     isWalk = false;
+            //     guideMesh.position.set(5,0,5);
+            // }
+            // if (intersect.object.name === '大屏幕01' || intersect.object.name === '大屏幕02' || intersect.object.name === '操作台屏幕' || intersect.object.name === '环形屏幕2') {
+            //     crossPlay(actionWalk, actionIdle);
+            //     isWalk = false;
+            //     guideMesh.position.set(5,0,5);
+            // }
+            // if (intersect.object.name === '环形屏幕') {
+            //     crossPlay(actionWalk, actionIdle);
+            //     isWalk = false;
+            //     guideMesh.position.set(5,0,5);
+            // }
+            // if (intersect.object.name === '柱子屏幕') {
+            //     crossPlay(actionWalk, actionIdle);
+            //     isWalk = false;
+            //     guideMesh.position.set(5,0,5);
+            // }
+        }
+    });
 }
 
 let t = 0;
 // //给定一条曲线，让特定的mesh按轨迹自动移动
-function moveAlongCurve(mesh,curve) {
-    
+function moveAlongCurve(mesh, curve) {
+
     let pos = curve.getPoint(t);
     mesh.position.set(pos.x, pos.y, pos.z);
     mesh.lookAt(curve.getPoint(t + 0.01));
@@ -401,7 +399,7 @@ function moveAlongCurve(mesh,curve) {
     // console.log(t);
 }
 // //创建一条曲线
-let curve = new THREE.CatmullRomCurve3([    
+let curve = new THREE.CatmullRomCurve3([
     new THREE.Vector3(3, 0, 11.5),
     new THREE.Vector3(3, 0, 10),
     new THREE.Vector3(5, 0, 6),
@@ -409,19 +407,45 @@ let curve = new THREE.CatmullRomCurve3([
     // new THREE.Vector3(0, 0, 11),
 ]);
 
+let ajoystick;
+let move = {
+    forward: 0,
+    turn: 0
+  }
+function createJoyStick() {
+    ajoystick = new joystick({
+        onMove: function (forward, turn) {
+            turn = -turn
+            if (Math.abs(forward) < 0.3) forward = 0
+            if (Math.abs(turn) < 0.1) turn = 0
+            move.forward = forward
+            move.turn = turn
+            console.log('forward', forward, 'turn', turn);
+        }
+    })
+    if (move.forward != 0) {
+        playerMesh.translateZ(move.forward * 0.1);
+    }
+    if (move.turn !=0){
+        playerMesh.rotateY(move.turn*0.1);
+    }
+}
 
 function animate() {
     requestAnimationFrame(animate);
 
     renderer.render(scene, camera);
-    
+
     // guideMesh.rotateY(-0.1);
 
     //调用onPointerMove
     onPointerMove();
 
+    //摇杆
+    createJoyStick();
+
     //调用moveAlongCurve
-    moveAlongCurve(guideMesh,curve);
+    moveAlongCurve(guideMesh, curve);
 
     // moveAlongCurve(curve);
 

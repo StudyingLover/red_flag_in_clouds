@@ -407,6 +407,8 @@ let curve = new THREE.CatmullRomCurve3([
     // new THREE.Vector3(0, 0, 11),
 ]);
 
+
+//摇杆功能
 let ajoystick;
 let move = {
     forward: 0,

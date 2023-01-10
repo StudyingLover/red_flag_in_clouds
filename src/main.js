@@ -1,13 +1,14 @@
-let mixer;
+let mixer;//动画混合器
 let playerMixer;
 let guideMixer;
 
 let mouse_on_object_name;//鼠标所在的物体名称
 
+//创建场景，摄像机，渲染器
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.01, 50);
 const renderer = new THREE.WebGLRenderer({ antialias: true });
-renderer.shadowMap.enabled = true;
+renderer.shadowMap.enabled = true;//开启renderer阴影
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 
@@ -15,7 +16,7 @@ camera.position.set(5, 10, 25);//设置相机初始位置
 
 // const controls = new OrbitControls(camera, renderer.domElement);
 
-scene.background = new THREE.Color(0.2, 0.2, 0.2);
+scene.background = new THREE.Color(0.2, 0.2, 0.2);//添加背景
 
 const ambientLight = new THREE.AmbientLight(0xffffff, 0.1);
 scene.add(ambientLight);
@@ -26,11 +27,14 @@ scene.add(directionLight);
 // directionLight.position.set (10, 10, 10);
 directionLight.lookAt(new THREE.Vector3(0, 0, 0));
 
+//打开灯光阴影
 directionLight.castShadow = true;
 
+//设置阴影贴图大小
 directionLight.shadow.mapSize.width = 2048;
 directionLight.shadow.mapSize.height = 2048;
 
+//设置阴影相机参数,远近，大小，不在范围内显示不出来
 const shadowDistance = 20;
 directionLight.shadow.camera.near = 0.1;
 directionLight.shadow.camera.far = 40;
@@ -56,7 +60,7 @@ let guide_actionWalk, guide_actionIdle;
 const lookTarget = new THREE.Vector3(0, 2, 0);
 new THREE.GLTFLoader().load('../resources/models/player.glb', (gltf) => {
     playerMesh = gltf.scene;
-    scene.add(gltf.scene);
+    scene.add(gltf.scene);//把模型添加到场景
 
     playerMesh.traverse((child) => {
         child.receiveShadow = true;
@@ -64,24 +68,27 @@ new THREE.GLTFLoader().load('../resources/models/player.glb', (gltf) => {
     })
 
     playerMesh.position.set(0, 0, 11.5);//人物初始位置
-    // playerMesh.position.set(5, 5, 11.5);
-    playerMesh.rotateY(Math.PI);//人物初始旋转pi
+    playerMesh.rotateY(Math.PI);//人物初始旋转pi,调整人物朝向
 
     playerMesh.add(camera);//相机跟着人走
-    camera.position.set(0, 2, -5);
-    camera.lookAt(lookTarget);
+    camera.position.set(0, 2, -5);//设置位置
+    camera.lookAt(lookTarget);//设置相机看的位置
 
+    //给人物设置点光源
     const pointLight = new THREE.PointLight(0xffffff, 1.5);
+    scene.add(pointLight)
     playerMesh.add(pointLight);
     pointLight.position.set(0, 1.8, -1);
 
     playerMixer = new THREE.AnimationMixer(gltf.scene);
 
+    //设置移动动作
     const clipWalk = THREE.AnimationUtils.subclip(gltf.animations[0], 'walk', 0, 30);
     actionWalk = playerMixer.clipAction(clipWalk);
     // actionWalk.play();
 
-    const clipIdle = THREE.AnimationUtils.subclip(gltf.animations[0], 'idle', 31, 281);
+    //设置静止动作
+    const clipIdle = THREE.AnimationUtils.subclip(gltf.animations[0], 'idle', 31, 281);//下标0代表第一个动画，切出动作的动画
     actionIdle = playerMixer.clipAction(clipIdle);
     actionIdle.play();
 
@@ -146,21 +153,24 @@ const playerHalfHeight = new THREE.Vector3(0, 0.8, 0);
 function control() {
     window.addEventListener('keydown', (e) => {
         if (e.key === 'w') {
-            // playerMesh.translateZ(0.1);
 
+            //计算当前方向移动前后的向量
             const curPos = playerMesh.position.clone();
             playerMesh.translateZ(1);
             const frontPos = playerMesh.position.clone();
             playerMesh.translateZ(-1);
 
+            //计算移动向量并归一化
             const frontVector3 = frontPos.sub(curPos).normalize()
 
+            //碰撞检测
             const raycasterFront = new THREE.Raycaster(playerMesh.position.clone().add(playerHalfHeight), frontVector3);
-            const collisionResultsFrontObjs = raycasterFront.intersectObjects(scene.children);
+            const collisionResultsFrontObjs = raycasterFront.intersectObjects(scene.children);//获取碰撞的物体
             if (collisionResultsFrontObjs && collisionResultsFrontObjs[0] && collisionResultsFrontObjs[0].distance > 1) {
                 playerMesh.translateZ(0.1);
             }
 
+            //动作切换
             if (!isWalk) {
                 crossPlay(actionIdle, actionWalk);
                 isWalk = true;
@@ -257,6 +267,7 @@ new THREE.GLTFLoader().load('../resources/models/zhanguan.glb', (gltf) => {
         child.receiveShadow = true;
 
         if (child.name === '2023') {
+            //加载视频并设置自动，循环播放
             const video = document.createElement('video');
             video.src = "./resources/yanhua.mp4";
             video.muted = true;
@@ -264,9 +275,11 @@ new THREE.GLTFLoader().load('../resources/models/zhanguan.glb', (gltf) => {
             video.loop = true;
             video.play();
 
+            //将视频作为纹理贴到模型上
             const videoTexture = new THREE.VideoTexture(video);
             const videoMaterial = new THREE.MeshBasicMaterial({ map: videoTexture });
 
+            //设置模型的材质，防止材质与其他没有材质的物体关联
             child.material = videoMaterial;
         }
         if (child.name === '大屏幕01' || child.name === '大屏幕02' || child.name === '操作台屏幕' || child.name === '环形屏幕2') {
@@ -333,7 +346,11 @@ new THREE.GLTFLoader().load('../resources/models/zhanguan.glb', (gltf) => {
 //         renderer.render(scene, camera);
 // });
 
+
+
+//动作切换函数
 function crossPlay(curAction, newAction) {
+    // curAction是现在正在播的动作，newAction是将要播的动作
     curAction.fadeOut(0.3);
     newAction.reset();
     newAction.setEffectiveWeight(1);

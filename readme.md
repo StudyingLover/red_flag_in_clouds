@@ -84,6 +84,7 @@
 - `object1.add(object2)` 让object2跟随object1
 - `moveAlongCurve(mesh,curve);` 让mesh按照curve运动
 - `onPointerMove` 检测鼠标点击到了哪个物体并输出，同时赋值给全局变量
+- `crossPlay` 动作切换函数
 - `control()` 键盘控制
 
 ### huizhanonline.html

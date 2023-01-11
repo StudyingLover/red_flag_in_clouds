@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0"/>
+	<title>党建小问答</title>
+	<script type="text/javascript" src="scripts/game.js"></script>
+	<script type="text/javascript" src="scripts/jquery-1.11.1.min.js"></script>
+	<style>
+	body{
+		cursor: url("./images/mouse.png"), auto;
+		height: 690px;
+		text-align: center;
+		background-image: url("./images/bg.jpg");}
+	#game{
+		width: 500px;
+		height: 500px;
+		margin: 0 auto;
+		border: 1px solid #666;
+		border-radius: 10px;
+		background-image: url("./images/zhuzi.png");
+		position: relative;
+		display: -webkit-box;
+		-webkit-box-pack:center;
+		-webkit-box-align:center;}
+	#squres{
+		width: 430px;
+		height: 430px;
+		position: absolute;
+		margin:0px auto;}
+	.squre{
+		width: 100px;
+		height: 100px;
+		position: absolute;}
+	.face{
+		width: 100%;
+		height: 100%;
+		border-radius:0px;
+		position: absolute;
+		-webkit-backface-visibility: hidden;
+		-webkit-transition:all .3s;}
+	.face:hover{
+		-webkit-box-shadow:0 0 40px #ff0000;}
+	.front{
+		background:#999 url("./images/blue.jpg")0 -222px;
+		z-index:8;}
+	.back{
+		background:#efefef url("./images/yellow.png");
+		z-index:7;}
+	.squre-flipped .front{
+		z-index: 7;
+		-webkit-transform: rotateY(180deg);}
+
+	
+	.left{
+		float: left;}
+	.right{
+		float: right;}
+	.middle{
+		width: 500px;
+		height: 20px;
+		margin: 0px auto;
+		text-align: center;}
+	#startgame{
+		width: 400px;
+		height: 450px;
+		background-image:url("./images/zhuzi.png");
+		margin: 60px auto;
+		padding: 50px 50px 0;
+		position: absolute;
+		z-index: 800;
+		top: 0;
+		left: 0;
+		right: 0;
+		opacity: 1;
+		display: block;}
+	#gameover{
+		width: 400px;
+		height: 500px;
+		background: #000;
+		margin: 0px auto;
+		padding: 50px 50px 0;
+		position: absolute;
+		z-index: 1000;
+		top: 0;
+		left: 0;
+		right: 0;
+		opacity: 0.8;
+		display: none;}
+	#tipbox{
+		text-align: left;
+		width: 500px;
+		height: 100px;
+		background:#fff;
+		position: absolute;
+		margin:auto;
+		left: 0;
+		right: 0;
+		z-index: 500;
+		opacity: 1;
+		display: none;}
+	h1{
+		text-align: center;
+		padding-top: 50px;
+		font-size: 60px;}
+	h1 a{
+		color: #fff;}
+	h3{
+		text-align: left;
+		padding-top: 15px;
+		font-size: 20px;
+		color: #7a0d0d;}
+	.allbutton{
+		padding: 0px;
+		text-align:center; 
+		line-height: 60px; 
+	}
+	button{
+		cursor: url("./images/mouse.png"), auto;
+		width: 180px;
+		height: 40px;
+		border: 0;
+		border-radius: 10px;
+		background: linear-gradient(#8ebfec,#7f5ebb);
+		color: #fff;
+		font-size: 20px;
+		font-family:"微软雅黑";
+		position: relative;}
+	button:hover{
+		background: linear-gradient(#7f5ebb,#8ebfec);}
+	#problem_0{
+		width: 400px;
+		height: 450px;
+		background-image:url("./images/0.jpg");
+		margin: 60px auto;
+		padding: 50px 50px 0;
+		position: absolute;
+		z-index: 500;
+		top: 0;
+		left: 0;
+		right: 0;
+		opacity: 1;
+		display: none;}	
+	#problem_1{
+		width: 400px;
+		height: 450px;
+		background-image:url("./images/1.png");
+		margin: 60px auto;
+		padding: 50px 50px 0;
+		position: absolute;
+		z-index: 500;
+		top: 0;
+		left: 0;
+		right: 0;
+		opacity: 1;
+		display: none;}	
+	#problem_2{
+		width: 400px;
+		height: 450px;
+		background-image:url("./images/2.jpg");
+		margin: 60px auto;
+		padding: 50px 50px 0;
+		position: absolute;
+		z-index: 500;
+		top: 0;
+		left: 0;
+		right: 0;
+		opacity: 1;
+		display: none;}	
+	#problem_3{
+		width: 400px;
+		height: 450px;
+		background-image:url("./images/3.jpg");
+		margin: 60px auto;
+		padding: 50px 50px 0;
+		position: absolute;
+		z-index: 500;
+		top: 0;
+		left: 0;
+		right: 0;
+		opacity: 1;
+		display: none;}	
+	#problem_4{
+		width: 400px;
+		height: 450px;
+		background-image:url("./images/4.jpg");
+		margin: 60px auto;
+		padding: 50px 50px 0;
+		position: absolute;
+		z-index: 500;
+		top: 0;
+		left: 0;
+		right: 0;
+		opacity: 1;
+		display: none;}
+	#problem_5{
+		width: 400px;
+		height: 450px;
+		background-image:url("./images/5.jpg");
+		margin: 60px auto;
+		padding: 50px 50px 0;
+		position: absolute;
+		z-index: 500;
+		top: 0;
+		left: 0;
+		right: 0;
+		opacity: 1;
+		display: none;}	
+	#problem_6{
+		width: 400px;
+		height: 450px;
+		background-image:url("./images/6.jpg");
+		margin: 60px auto;
+		padding: 50px 50px 0;
+		position: absolute;
+		z-index: 500;
+		top: 0;
+		left: 0;
+		right: 0;
+		opacity: 1;
+		display: none;}
+	#problem_7{
+		width: 400px;
+		height: 450px;
+		background-image:url("./images/7.jpg");
+		margin: 60px auto;
+		padding: 50px 50px 0;
+		position: absolute;
+		z-index: 500;
+		top: 0;
+		left: 0;
+		right: 0;
+		opacity: 1;
+		display: none;}
+	#problem_8{
+		width: 400px;
+		height: 450px;
+		background-image:url("./images/8.jpg");
+		margin: 60px auto;
+		padding: 50px 50px 0;
+		position: absolute;
+		z-index: 500;
+		top: 0;
+		left: 0;
+		right: 0;
+		opacity: 1;
+		display: none;}
+	#problem_9{
+		width: 400px;
+		height: 450px;
+		background-image:url("./images/9.jpg");
+		margin: 60px auto;
+		padding: 50px 50px 0;
+		position: absolute;
+		z-index: 500;
+		top: 0;
+		left: 0;
+		right: 0;
+		opacity: 1;
+		display: none;}
+	#problem_10{
+		width: 400px;
+		height: 450px;
+		background-image:url("./images/10.jpg");
+		margin: 60px auto;
+		padding: 50px 50px 0;
+		position: absolute;
+		z-index: 500;
+		top: 0;
+		left: 0;
+		right: 0;
+		opacity: 1;
+		display: none;}
+	#problem_11{
+		width: 400px;
+		height: 450px;
+		background-image:url("./images/11.jpg");
+		margin: 60px auto;
+		padding: 50px 50px 0;
+		position: absolute;
+		z-index: 500;
+		top: 0;
+		left: 0;
+		right: 0;
+		opacity: 1;
+		display: none;}
+	#problem_12{
+		width: 400px;
+		height: 450px;
+		background-image:url("./images/12.jpg");
+		margin: 60px auto;
+		padding: 50px 50px 0;
+		position: absolute;
+		z-index: 500;
+		top: 0;
+		left: 0;
+		right: 0;
+		opacity: 1;
+		display: none;}
+	#problem_13{
+		width: 400px;
+		height: 450px;
+		background-image:url("./images/13.jpg");
+		margin: 60px auto;
+		padding: 50px 50px 0;
+		position: absolute;
+		z-index: 500;
+		top: 0;
+		left: 0;
+		right: 0;
+		opacity: 1;
+		display: none;}
+	#problem_14{
+		width: 400px;
+		height: 450px;
+		background-image:url("./images/14.jpg");
+		margin: 60px auto;
+		padding: 50px 50px 0;
+		position: absolute;
+		z-index: 500;
+		top: 0;
+		left: 0;
+		right: 0;
+		opacity: 1;
+		display: none;}
+	#problem_15{
+		width: 400px;
+		height: 450px;
+		background-image:url("./images/15.jpg");
+		margin: 60px auto;
+		padding: 50px 50px 0;
+		position: absolute;
+		z-index: 500;
+		top: 0;
+		left: 0;
+		right: 0;
+		opacity: 1;
+		display: none;}
+		h{
+		font-size:45px;
+		font-weight:bold;
+		color: #7f5ebb;
+		font-family:"微软雅黑";
+	}
+	</style>
+</head>
+<body onLoad="timego()">
+	<audio id="quiet" hidden="true" autoplay="autoplay" loop="true" 
+	controls="controls"><source src="./sound/quiet.mp3" type="audio/mpeg"/></audio>
+	<audio id="falsesound" hidden="true"preload="auto"
+	controls="controls"><source src="./sound/aou.mp3" type="audio/mpeg"/></audio>
+	<audio id="truesound" hidden="true"preload="auto"
+	controls="controls"><source src="./sound/yes.wav" type="audio/mpeg"/></audio>
+	<div style="width: 500px;height: 50px;margin: 0px auto;position: relative;">
+		<div class="middle">
+			<span style="color:white;">党建小问答</span></div>
+		<div class="left"><span style="color:white;">时间：
+			<span id="sec" style="color:red;">30</span>秒</span></div>
+		<div class="right"><span style="color:white;">分数：
+			<span id="score" style="color:red;">0</span>分</span></div>
+	</div>
+	<div id="startgame">
+		<br><h>党建小问答</h><br><br>
+		<p style="text-align: left;">背景：2021年7月1日是中国共产党成立第100周年。
+			祝福党的百年华诞，祝福伟大的祖国！</p>
+		<p style="text-align: left;background-image: url('./images/mi.png');">
+			规则：初始分数为0、时间为30，点击方块加10秒并触发事件。
+			答对分数加5，时间加10，答错分数减5时间减5。点击过的方块不能再点击。
+			得分小提示：四道题选项有0的为正确答案，没有就认真答题吧。</p>
+		<a href="./1_3CSM/42CSM_1.html">制作者</a><br><br>
+		<button  onclick="startgame()">开 始 游 戏</button>
+	</div>
+
+	<div id="gameover">	
+		<h1><h>分数为<span id="score2" style="color:red;">0</span></h>
+		<br><a href="">重新开始</a></h1>
+	</div>
+
+	<section id="game" >
+		<div id="squres">	
+			<div class="squre">
+				<div class="face front"></div>
+				<div class="face back"></div>
+			</div>
+	</section>
+		
+	<canvas id="hud" width="120" height="20" style="margin: 0 auto;
+	background-image: url('./images/mi.png');z-index: 600;display:none;"></canvas>
+	<button id="tips" style="margin: 0 auto;display:none" onclick="tip()" >
+		游 戏 规 则</button>
+	<div id="tipbox"style="opacity:0.7">
+	<p>初始分数为0、时间为30，点击方块加10秒并触发事件。
+	答对分数加5时间加10，答错分数减5时间减5。点击过的方块不能再点击。
+	得分小提示：四道题选项有0的为正确答案，没有就认真答题吧。</p>
+	</div>
+
+	<div id="problem_0">
+		<button style="top:300px;" onclick="addtime()" >确认获得</button>
+	</div>
+	<div id="problem_1">
+		<h3>“一带一路”是“丝绸之路经济带”和“21世纪海上丝绸之路”的简称，西汉著名外交家、
+			丝绸之路的开拓者张骞是【】人</h3>
+		<div class="allbutton">
+		<button onclick="add()" >陕西0</button><br>
+		<button onclick="less()">山西</button><br> 
+		<button onclick="less()">甘肃</button><br>
+		<button onclick="less()">湖北</button><br>
+		</div>
+	</div>
+	<div id="problem_2">
+		<h3 style="font-size: 22px;background-image:url('./images/mi.png');">京剧脸谱，是一种具有中国文化特色的特殊化妆方法。其中表示忠勇侠义的是【】</h3>
+		<div class="allbutton">
+		<button onclick="less()">绿色</button><br>
+		<button onclick="add()" >红色</button><br> 
+		<button onclick="less()">黄色</button><br>
+		<button onclick="less()">蓝色</button><br>
+		</div>
+	</div>
+	<div id="problem_3">
+		<h3>习近平到安吉天荒坪镇余村考察时，首次提出“绿水青山就是金山银山”。词句“青山依旧在，几度夕阳红”的作者是明代的【】</h3>
+		<div class="allbutton">
+		<button onclick="less()">施耐庵</button><br>
+		<button onclick="less()">罗贯中</button><br> 
+		<button onclick="add()" >杨慎0</button><br>
+		<button onclick="less()">杨基</button><br>
+		</div>
+	</div>
+	<div id="problem_4">
+		<h3 >习近平总书记非常重视学习型政党、学习型社会的建设。他多次引用过“腹有诗书气自华”这句诗，请问这句诗的作者是【】</h3>
+		<div class="allbutton">
+		<button onclick="less()">李白</button><br> 
+		<button onclick="less()">杜甫</button><br>
+		<button onclick="add()" >苏轼0</button><br>
+		<button onclick="less()">欧阳修</button><br>
+		</div>
+	</div>
+	<div id="problem_5">
+		<button style="top:280px;" onclick="lesstime()">确认获得</button>
+	</div>
+	<div id="problem_6">
+		<h3 style="background-image:url('./images/mi.png');">我国科学家屠呦呦
+			提取了中药成分【】用于抗疟疾，因此获得了诺贝尔生理学医学奖。</h3>
+		<div class="allbutton">
+		<button onclick="less()">胰岛素</button><br>
+		<button onclick="less()">青霉素</button><br>
+		<button onclick="add()" >青蒿素</button><br>
+		<button onclick="less()">青鲜素</button><br>
+		</div>
+	</div>
+	<div id="problem_7">
+		<h3>2016年10月27日，习近平总书记在党的十八届六中全会第二次全体会议上
+			指出【】是党最根本、最重要的纪律，遵守政治纪律和政治规矩是遵守党的
+			全部纪律的基础。</h3>
+		<div class="allbutton">
+		<button style="width: 260px;" onclick="add()" >政治纪律和政治规矩</button><br> 
+		<button style="width: 260px;" onclick="less()">组织纪律和组织规矩</button><br>
+		<button style="width: 260px;" onclick="less()">工作纪律和工作规矩</button><br>	
+		</div>
+	</div>
+	<div id="problem_8">
+		<h3>《中华人民共和国国家安全法》规定,【】领导全国武装力量,决定军事战略
+			和武装力量的作战方针,统一指挥维护国家安全的军事行动</h3>
+		<div class="allbutton">
+		<button style="width: 280px;" onclick="less()">全国人民代表大会</button><br>
+		<button style="width: 280px;" onclick="less()">全国人民代表大会常务委员会</button><br> 
+		<button style="width: 280px;" onclick="less()">国务院</button><br>
+		<button style="width: 280px;" onclick="add()" >中央军事委员会</button><br>
+		</div>
+	</div>	
+	<div id="problem_9">
+		<h3 style="background-image:url('./images/mi.png');">1931年夏，
+			毛泽东写下了“七百里驱十五日，赣水苍茫闽山碧，横扫千军如卷席”的词句，
+			描写的是【 】的战斗场面。</h3>
+		<div class="allbutton">
+		<button style="width: 260px;" onclick="less()">反第一次大"围剿"</button><br>
+		<button style="width: 260px;" onclick="add()" >反第二次大"围剿"</button><br> 
+		<button style="width: 260px;" onclick="less()">反第三次大"围剿"</button><br>
+		</div>
+	</div>
+	<div id="problem_10">
+		<button style="top:300px;" onclick="addtime()" >确认获得</button>
+	</div>
+	<div id="problem_11">
+		<h3>毛泽东的诗作《七律和柳亚子先生》中“牢骚太盛防肠断”的下一句是“【 】”</h3>
+		<div class="allbutton">
+		<button style="width: 220px;" onclick="add()" >风物长宜放眼量0</button><br>
+		<button style="width: 220px;" onclick="less()">索句渝州叶正黄</button><br> 
+		<button style="width: 220px;" onclick="less()">落花时节读华章</button><br>
+		<button style="width: 220px;" onclick="less()">观鱼胜过富春江</button><br>
+		</div>
+	</div>
+	<div id="problem_12">
+		<h3 style="background-image:url('./images/mi.png');">诗句“遥知不是雪，
+			为有暗香来”中描述的是【 】的香气</h3>
+		<div class="allbutton">
+		<button onclick="less()">兰花</button><br>
+		<button onclick="less()">梨花</button><br> 
+		<button onclick="add()" >梅花</button><br>
+		<button onclick="less()">菊花</button><br>
+		</div>
+	</div>
+	<div id="problem_13">
+		<h3 style="background-image:url('./images/mi.png');">以下能源中不属于
+			可再生资源的能源是【 】</h3>
+		<div class="allbutton">
+		<button onclick="less()">太阳能</button><br>
+		<button onclick="less()">地热能</button><br> 
+		<button onclick="less()">风能</button><br>
+		<button onclick="add()" >石油</button><br>
+		</div>
+	</div>
+	<div id="problem_14">
+		<h3 style="background-image:url('./images/mi.png');">做好党的新闻舆论
+			工作，必须把【 】方向摆在第一位，坚持党性原则，坚持党管宣传、党管
+			意识形态、党管媒体，坚持政治家办报、办刊、办台、办新闻网站。</h3>
+		<div class="allbutton">
+		<button onclick="add()" >政治</button><br>
+		<button onclick="less()">经济</button><br> 
+		<button onclick="less()">文化</button><br>
+		<button onclick="less()">政策</button><br>
+		</div>
+	</div>
+	<div id="problem_15">
+		<button style="top:320px;" onclick="lesstime()">确认获得</button>
+	</div>
+
+
+	
+	<script type="text/javascript">
+	$(function(){
+		squre.Game.arr=[];
+ 		for (var i = 16 - 1; i >= 0; i--) {
+			//从原数组中随机取一个元素出来
+			var ind = Math.floor(Math.random() * squre.Game.desk.length);
+			//压入结果数组
+			squre.Game.arr.push(squre.Game.desk[ind]);
+			console.log(squre.Game.desk[ind]);
+			squre.Game.desk.splice(ind, 1);//将该元素从原数组中删除
+		};  
+		var $squre=$(".squre");
+		for(var i=0;i<15;i++)
+		{//复制squre并放到squres中
+			$squre.clone().appendTo($("#squres"));
+		}
+		//对每个方块进行设置
+		$(".squre").each(function(index){//遍历每个squre类
+			$(this).css({//调整坐标
+				"left":(squre.Game.squreWidth+10)*(index%4)+"px",//左边缘
+				"top":(squre.Game.squreHeight+10)*Math.floor(index/4)+"px"
+			});
+			//方块id为deck下标对应数值
+			var pattern=squre.Game.arr.pop();//squre.Game.desk[index];
+			//方块id赋值给data
+			$(this).data("pattern",pattern);
+			//把方块背面面附加上去
+			$(this).find(".back").addClass(pattern);
+			//点击方块的功能函数挂接
+			$(this).click(changeSqure);
+		});
+	});
+	//背景雪花飘落特效
+	(function($){
+		$.fn.snow = function(options){
+		var $flake = $('<div id="snowbox" />').css({'position': 'absolute','z-index':'9999', 'top': '-50px'}).html('&#10052;'),
+		documentHeight 	= $(document).height(),
+		documentWidth	= $(document).width(),
+		defaults = {
+			minSize		: 10,
+			maxSize		: 20,
+			newOn		: 1000,
+			flakeColor	: "#AFDAEF"//定义雪花颜色
+		},
+		options	= $.extend({}, defaults, options);
+		var interval= setInterval( function(){
+		var startPositionLeft = Math.random() * documentWidth - 150,
+		startOpacity = 0.5 + Math.random(),
+		sizeFlake = options.minSize + Math.random() * options.maxSize,
+		endPositionTop = documentHeight - 100,
+		endPositionLeft = startPositionLeft - 500 + Math.random() * 500,
+		durationFall = documentHeight * 10 + Math.random() * 5000;
+		$flake.clone().appendTo('body').css({
+			left: startPositionLeft,
+			opacity: startOpacity,
+			'font-size': sizeFlake,
+			color: options.flakeColor
+		}).animate({
+			top: endPositionTop,
+			left: endPositionLeft,
+			opacity: 0.2
+		},durationFall,'linear',function(){
+			$(this).remove()
+		});
+		}, options.newOn);
+		};
+	})(jQuery);
+	$(function(){
+		$.fn.snow({ 
+			minSize: 5, // 定义雪花最小尺寸
+			maxSize: 50,// 定义雪花最大尺寸
+			newOn: 500  //定义密集程度，数字越小越密集
+		});
+	});
+	
+	</script>
+</body>
+</html>
+

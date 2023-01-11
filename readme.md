@@ -94,3 +94,4 @@
 1. 元宇宙搭建:https://www.bilibili.com/video/BV1EK411z78e?share_source=copy_web
 2. 虚拟人播报:https://github.com/JiehangXie/PaddleBoBo
 3. GLTFLoader:https://github.com/mayupi/3dvr-gallery
+4. 小游戏:https://github.com/wanghao221/wanghao221.github.io.git

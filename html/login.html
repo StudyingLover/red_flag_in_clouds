@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    body {
+      background: url('https://raw.githubusercontent.com/StudyingLover/anything/main/515fe0846b0699157c0b2a4a7a26864.jpg') no-repeat;
+      background-size: 100% 100%;
+    }
+
+    #login_box {
+      width: 20%;
+      height: 400px;
+      background-color: #00000060;
+      margin: auto;
+      margin-top: 10%;
+      text-align: center;
+      border-radius: 10px;
+      padding: 50px 50px;
+    }
+
+    h2 {
+      color: #00000090;
+      margin-top: 5%;
+    }
+
+    #input-box {
+      margin-top: 20%;
+    }
+
+    span {
+      color: #fff;
+    }
+
+    input {
+      border: 0;
+      width: 60%;
+      font-size: 15px;
+      color: rgb(0, 0, 0);
+      background: transparent;
+      border-bottom: 2px solid rgb(0, 0, 0);
+      padding: 5px 10px;
+      outline: none;
+      margin-top: 10px;
+    }
+
+    button {
+      margin-top: 50px;
+      width: 60%;
+      height: 30px;
+      border-radius: 10px;
+      border: 0;
+      color: #fff;
+      text-align: center;
+      line-height: 30px;
+      font-size: 15px;
+      background-image: linear-gradient(to right, #30cfd0, #330867);
+    }
+
+    #sign_up {
+      margin-top: 45%;
+      margin-left: 60%;
+    }
+
+    a {
+      color: #b94648;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="login_box">
+    <h2>LOGIN</h2>
+    <div id="input_box">
+      <input type="text" id="input" placeholder="请输入用户名">
+    </div>
+    <div class="input_box">
+      <input type="password" id="password" placeholder="请输入密码">
+    </div>
+    <script>
+        function login() {
+            var input = document.getElementById("input").value;
+            var password = document.getElementById("password").value;
+            if (input == "admin" && password == "admin") {
+            alert("登录成功");
+            window.location.href = "../index.html";
+            } else {
+            alert("登录失败");
+            }
+        }
+    </script>
+    <!-- <button onclick="window.location.href='../index.html'" type="button" id="add">登录</button> -->
+    <button onclick="login()" type="button" id="add">登录</button>
+    <br>
+
+  </div>
+</body>
+</html>

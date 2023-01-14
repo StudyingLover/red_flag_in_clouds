@@ -135,4 +135,4 @@ class JoyStick {
     this.domElement = thumb
   }
 }
-let joystick=JoyStick//暴露在全局
+let JOYSTICK=JoyStick//暴露在全局 JOYSTICK

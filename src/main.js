@@ -432,14 +432,14 @@ let move = {
     turn: 0
   }
 function createJoyStick() {
-    ajoystick = new joystick({
+    ajoystick = new JOYSTICK({
         onMove: function (forward, turn) {
             turn = -turn
             if (Math.abs(forward) < 0.3) forward = 0
             if (Math.abs(turn) < 0.1) turn = 0
             move.forward = forward
             move.turn = turn
-            console.log('forward', forward, 'turn', turn);
+            // console.log('forward', forward, 'turn', turn);
         }
     })
     if (move.forward != 0) {

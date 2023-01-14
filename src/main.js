@@ -149,8 +149,10 @@ window.addEventListener('click', function (e) {
     }
 });
 
+//键盘行走判断和摇杆行走判断只能同时存在一个
 let isWalk = false;
 let isWalk_joystick = false;
+
 const playerHalfHeight = new THREE.Vector3(0, 0.8, 0);
 function idle2walk_forward(Mesh,Idle,Walk){
     //计算当前方向移动前后的向量

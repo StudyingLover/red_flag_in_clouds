@@ -430,12 +430,12 @@ function createJoyStick() {
 //获取触摸点的坐标并转换为ThreeJS中的坐标，进行碰撞检测，返回碰撞的物体
 function touch_crash_detect(){
     window.addEventListener('touchstart', (event) => {
+        let touch_object=new THREE.Vector2();
         let touch = event.touches[0];
-        let x = (touch.clientX / window.innerWidth) * 2 - 1;
-        let y = -(touch.clientY / window.innerHeight) * 2 + 1;
-        let vector = new THREE.Vector3(x, y, 0.5);
-        vector.unproject(camera);
-        let raycaster = new THREE.Raycaster(camera.position, vector.sub(camera.position).normalize());
+        touch_object.x = (touch.clientX / window.innerWidth) * 2 - 1;
+        touch_object.y = -(touch.clientY / window.innerHeight) * 2 + 1;
+
+        raycaster.setFromCamera(touch_object, camera);
         let intersects = raycaster.intersectObjects(scene.children, true);
         if (intersects.length > 0) {
             // console.log(intersects[0].object);

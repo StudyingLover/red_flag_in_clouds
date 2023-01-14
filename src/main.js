@@ -3,6 +3,7 @@ let playerMixer;
 let guideMixer;
 
 let mouse_on_object_name;//鼠标所在的物体名称
+let touch_on_object_name;//触摸所在的物体名称
 
 //创建场景，摄像机，渲染器
 const scene = new THREE.Scene();
@@ -372,35 +373,11 @@ function onPointerMove() {
 
         mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
         mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
-
         raycaster.setFromCamera(mouse, camera);
-
         const intersects = raycaster.intersectObjects(scene.children, true);
-
         if (intersects.length > 0) {
             const intersect = intersects[0];
             mouse_on_object_name = intersect.object.name;
-            // console.log(intersect.object.name);
-            // if (intersect.object.name === '2023') {
-            //     crossPlay(actionWalk, actionIdle);
-            //     isWalk = false;
-            //     guideMesh.position.set(5,0,5);
-            // }
-            // if (intersect.object.name === '大屏幕01' || intersect.object.name === '大屏幕02' || intersect.object.name === '操作台屏幕' || intersect.object.name === '环形屏幕2') {
-            //     crossPlay(actionWalk, actionIdle);
-            //     isWalk = false;
-            //     guideMesh.position.set(5,0,5);
-            // }
-            // if (intersect.object.name === '环形屏幕') {
-            //     crossPlay(actionWalk, actionIdle);
-            //     isWalk = false;
-            //     guideMesh.position.set(5,0,5);
-            // }
-            // if (intersect.object.name === '柱子屏幕') {
-            //     crossPlay(actionWalk, actionIdle);
-            //     isWalk = false;
-            //     guideMesh.position.set(5,0,5);
-            // }
         }
     });
 }
@@ -450,6 +427,24 @@ function createJoyStick() {
     }
 }
 
+//获取触摸点的坐标并转换为ThreeJS中的坐标，进行碰撞检测，返回碰撞的物体
+function touch_crash_detect(){
+    window.addEventListener('touchstart', (event) => {
+        let touch = event.touches[0];
+        let x = (touch.clientX / window.innerWidth) * 2 - 1;
+        let y = -(touch.clientY / window.innerHeight) * 2 + 1;
+        let vector = new THREE.Vector3(x, y, 0.5);
+        vector.unproject(camera);
+        let raycaster = new THREE.Raycaster(camera.position, vector.sub(camera.position).normalize());
+        let intersects = raycaster.intersectObjects(scene.children, true);
+        if (intersects.length > 0) {
+            // console.log(intersects[0].object);
+            touch_on_object_name = intersects[0].object.name;
+        }
+    });
+}
+
+
 function animate() {
     requestAnimationFrame(animate);
 
@@ -464,11 +459,15 @@ function animate() {
     createJoyStick();
 
     //调用moveAlongCurve
-    moveAlongCurve(guideMesh, curve);
+    // moveAlongCurve(guideMesh, curve);
 
-    // moveAlongCurve(curve);
+    touch_crash_detect();
 
-    // console.log("player_position:",playerMesh.position.x,playerMesh.position.y,playerMesh.position.z);
+    if(touch_on_object_name=='大屏幕01' || touch_on_object_name === '大屏幕02')
+    {
+        guideMesh.position.set(5,5,11.5)
+    }
+
     if (mixer) {
         mixer.update(0.02);
     }

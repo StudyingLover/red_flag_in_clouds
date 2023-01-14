@@ -150,35 +150,94 @@ window.addEventListener('click', function (e) {
 });
 
 let isWalk = false;
+let isWalk_joystick = false;
 const playerHalfHeight = new THREE.Vector3(0, 0.8, 0);
+function idle2walk_forward(Mesh,Idle,Walk){
+    //计算当前方向移动前后的向量
+    const curPos = Mesh.position.clone();
+    Mesh.translateZ(1);
+    const frontPos = Mesh.position.clone();
+    Mesh.translateZ(-1);
+
+    //计算移动向量并归一化
+    const frontVector3 = frontPos.sub(curPos).normalize()
+
+    //碰撞检测
+    const raycasterFront = new THREE.Raycaster(Mesh.position.clone().add(playerHalfHeight), frontVector3);
+    const collisionResultsFrontObjs = raycasterFront.intersectObjects(scene.children);//获取碰撞的物体
+    if (collisionResultsFrontObjs && collisionResultsFrontObjs[0] && collisionResultsFrontObjs[0].distance > 1) {
+        Mesh.translateZ(0.1);
+    }
+
+    //动作切换
+    if (!isWalk) {
+        crossPlay(Idle, Walk);
+        isWalk = true;
+    }
+}
+
+function idle2walk_back(Mesh,Idle,Walk){
+    //计算当前方向移动前后的向量
+    const curPos = Mesh.position.clone();
+    Mesh.translateZ(-1);
+    const frontPos = Mesh.position.clone();
+    Mesh.translateZ(1);
+
+    //计算移动向量并归一化
+    const frontVector3 = frontPos.sub(curPos).normalize()
+
+    //碰撞检测
+    const raycasterFront = new THREE.Raycaster(Mesh.position.clone().add(playerHalfHeight), frontVector3);
+    // console.log(raycasterFront)
+    const collisionResultsFrontObjs = raycasterFront.intersectObjects(scene.children);//获取碰撞的物体
+    // console.log(collisionResultsFrontObjs[0])
+    if (collisionResultsFrontObjs[0]){//如果有碰撞物体下面的碰撞检测判断才能正常运行，不加这个判断如果人物后方为空则不能后退
+        if (collisionResultsFrontObjs && collisionResultsFrontObjs[0] && collisionResultsFrontObjs[0].distance > 1) {
+            Mesh.translateZ(-0.1);//
+        }
+    }
+    else{
+        Mesh.translateZ(-0.1);
+    }
+
+    //动作切换
+    if (!isWalk) {
+        crossPlay(Idle, Walk);
+        isWalk = true;
+    }
+}
+
+//键盘控制
 function control() {
     window.addEventListener('keydown', (e) => {
         if (e.key === 'w') {
 
-            //计算当前方向移动前后的向量
-            const curPos = playerMesh.position.clone();
-            playerMesh.translateZ(1);
-            const frontPos = playerMesh.position.clone();
-            playerMesh.translateZ(-1);
+            idle2walk_forward(playerMesh,actionIdle,actionWalk);
+            // //计算当前方向移动前后的向量
+            // const curPos = playerMesh.position.clone();
+            // playerMesh.translateZ(1);
+            // const frontPos = playerMesh.position.clone();
+            // playerMesh.translateZ(-1);
 
-            //计算移动向量并归一化
-            const frontVector3 = frontPos.sub(curPos).normalize()
+            // //计算移动向量并归一化
+            // const frontVector3 = frontPos.sub(curPos).normalize()
 
-            //碰撞检测
-            const raycasterFront = new THREE.Raycaster(playerMesh.position.clone().add(playerHalfHeight), frontVector3);
-            const collisionResultsFrontObjs = raycasterFront.intersectObjects(scene.children);//获取碰撞的物体
-            if (collisionResultsFrontObjs && collisionResultsFrontObjs[0] && collisionResultsFrontObjs[0].distance > 1) {
-                playerMesh.translateZ(0.1);
-            }
+            // //碰撞检测
+            // const raycasterFront = new THREE.Raycaster(playerMesh.position.clone().add(playerHalfHeight), frontVector3);
+            // const collisionResultsFrontObjs = raycasterFront.intersectObjects(scene.children);//获取碰撞的物体
+            // if (collisionResultsFrontObjs && collisionResultsFrontObjs[0] && collisionResultsFrontObjs[0].distance > 1) {
+            //     playerMesh.translateZ(0.1);
+            // }
 
-            //动作切换
-            if (!isWalk) {
-                crossPlay(actionIdle, actionWalk);
-                isWalk = true;
-            }
+            // //动作切换
+            // if (!isWalk) {
+            //     crossPlay(actionIdle, actionWalk);
+            //     isWalk = true;
+            // }
         }
         if (e.key === 's') {
-            playerMesh.translateZ(-0.1);
+            // playerMesh.translateZ(-0.1);
+            idle2walk_back(playerMesh,actionIdle,actionWalk);
         }
 
         if (e.key === 'a') {
@@ -230,6 +289,10 @@ function control() {
     })
     window.addEventListener('keyup', (e) => {
         if (e.key === 'w') {
+            crossPlay(actionWalk, actionIdle);
+            isWalk = false;
+        }
+        if (e.key === 's') {
             crossPlay(actionWalk, actionIdle);
             isWalk = false;
         }

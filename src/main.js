@@ -115,7 +115,7 @@ new THREE.GLTFLoader().load('../resources/models/player.glb', (guide) => {
         child.castShadow = true;
     })
 
-    guideMesh.position.set(41, 0, 11.5);//人物初始位置
+    guideMesh.position.set(3, 0, 11.5);//人物初始位置
     guideMesh.rotateY(Math.PI);//人物初始旋转pi
     // guideMesh.position.set(-5, 3, 11.5);
 
@@ -465,7 +465,7 @@ function animate() {
 
     if(touch_on_object_name=='大屏幕01' || touch_on_object_name === '大屏幕02')
     {
-        guideMesh.position.set(5,5,11.5)
+        guideMesh.position.set(3,0,11.5)
     }
 
     if (mixer) {

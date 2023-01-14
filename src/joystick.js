@@ -117,7 +117,7 @@ class JoyStick {
       background: rgba(126, 126, 126, 0.2);
       border: #444 solid medium;
       border-radius: 50%;
-      left: 50%;
+      left: 25%;
       transform: translateX(-50%);
     `
     const thumb = document.createElement('div')

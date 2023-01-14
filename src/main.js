@@ -443,10 +443,10 @@ function createJoyStick() {
         }
     })
     if (move.forward != 0) {
-        playerMesh.translateZ(move.forward * 0.1);
+        playerMesh.translateZ(move.forward * 0.06);
     }
     if (move.turn !=0){
-        playerMesh.rotateY(move.turn*0.1);
+        playerMesh.rotateY(move.turn*0.03);
     }
 }
 

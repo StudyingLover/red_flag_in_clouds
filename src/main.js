@@ -461,12 +461,9 @@ function animate() {
     //调用moveAlongCurve
     // moveAlongCurve(guideMesh, curve);
 
+    //触摸检测
     touch_crash_detect();
 
-    if(touch_on_object_name=='大屏幕01' || touch_on_object_name === '大屏幕02')
-    {
-        guideMesh.position.set(3,0,11.5)
-    }
 
     if (mixer) {
         mixer.update(0.02);

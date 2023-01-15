@@ -13,7 +13,7 @@
         padding: 0px;
     }
     #canvas1 {
-    /* background-color: #000; */
+    background-color: #4B86D4;
     width: 100vw;
     height: 100vh;
     border:  solid rgb(195, 20, 20);
@@ -35,9 +35,31 @@
 </style>
 
 <body>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
     <div id="canvas1">
+        <div id="head">
+            <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.birds.min.js"></script>
+            <script>
+                VANTA.BIRDS({
+                  el: "#head",
+                  mouseControls: true,
+                  touchControls: true,
+                  gyroControls: false,
+                  minHeight: 200.00,
+                  minWidth: 200.00,
+                  scale: 1.00,
+                  scaleMobile: 1.00,
+                  backgroundColor: 0x4a87d4,
+                  color1: 0xaa4949,
+                  birdSize: 1.40,
+                  speedLimit: 8.00,
+                  separation: 31.00
+                })
+                </script>
+        </div>
         <div id="canvas2">
-            <script src="/src/three.js"></script>
+            <!-- <script src="/src/three.js"></script> -->
+            
             <script src="/src/GLTFLoader.js"></script>
             <script src="/src/joystick.js"></script>
             <script src="/src/main.js"></script>

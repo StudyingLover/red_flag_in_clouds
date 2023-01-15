@@ -14,8 +14,9 @@ renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 
 //设置canvas大小，https://stackoverflow.com/questions/17507525/putting-three-js-animation-inside-of-div
-container = document.getElementById( 'canvas' );
-document.body.appendChild( container );
+let container = document.getElementById( 'canvas2' );
+// document.body.appendChild( container );
+container.appendChild(renderer.domElement);
 var factor = 0.8; // percentage of the screen
 var w = window.innerWidth * factor;
 var h = window.innerHeight * factor;

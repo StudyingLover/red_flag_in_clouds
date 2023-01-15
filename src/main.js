@@ -147,18 +147,18 @@ new THREE.GLTFLoader().load('../resources/models/player.glb', (guide) => {
 });
 
 //鼠标测试
-window.addEventListener('click', function (e) {
-    if (e.button === 0) {
-        // console.log("点击了鼠标左键");
-        //网页跳转测试
-        // window.location.href='http://blog.yoodb.com';
-        // window.open('http://blog.yoodb.com', '_blank' + new Date().getTime())
-    }
-    if (e.button === 2) {
-        // console.log("点击了鼠标右键");
+// window.addEventListener('click', function (e) {
+//     if (e.button === 0) {
+//         console.log("点击了鼠标左键");
+//         console.log(e.clientX, e.clientY);
+//     }
+//     if (e.button === 2) {
+//         // console.log("点击了鼠标右键");
+//     }
+// });
 
-    }
-});
+
+
 
 //键盘行走判断和摇杆行走判断只能同时存在一个
 let isWalk = false;
@@ -318,7 +318,43 @@ control();
 let preClientX;
 let preClientY;
 // let mouse;
-window.addEventListener('mousemove', (e) => {
+
+//根据当前相机的投影矩阵将点从屏幕空间 2D 转换为 3D 空间中的点
+//效果很烂，用不了，留着做个参考
+function get3DPosition(x, y, camera, scene) {
+    var vector = new THREE.Vector3();
+    // calculate mouse position in normalized device coordinates
+    // (-1 to +1) for both components
+    vector.x = ( x / window.innerWidth ) * 2 - 1;
+    vector.y = - ( y / window.innerHeight ) * 2 + 1;
+
+    // unproject the vector
+    vector.unproject(camera);
+
+    // calculate the ray from the camera to the vector
+    var ray = new THREE.Raycaster(camera.position, vector.sub(camera.position).normalize());
+
+    // check for intersection with objects in the scene
+    var intersects = ray.intersectObjects(scene.children);
+    if (intersects.length > 0) {
+        return intersects[0].point;
+    }
+    else {
+        return null;
+    }
+}
+
+
+
+window.addEventListener('click', (event) => {
+    // if (event.button === 0) {
+    //     let pos = get3DPosition(event.clientX, event.clientY, camera,scene);
+    //     playerMesh.position.set(pos.x, pos.y, pos.z);
+    //     console.log('mouse',event.clientX,event.clientY,'pos', pos );
+    // }
+});
+
+
     // if (preClientX && playerMesh) {
     //     camera.rotateY(-(e.clientX - preClientX) * 0.01);
     // }
@@ -329,7 +365,10 @@ window.addEventListener('mousemove', (e) => {
     // preClientY = e.clientY;
     // console.log("mouse_position:",e.clientX, "," ,e.clientY);
 
-});
+
+
+
+
 
 // 加载场馆
 new THREE.GLTFLoader().load('../resources/models/zhanguan.glb', (gltf) => {
@@ -503,20 +542,10 @@ function createJoyStick() {
     }
 }
 
-//获取触摸点的坐标并转换为ThreeJS中的坐标，进行碰撞检测，返回碰撞的物体
+//获取触摸点的坐标并转换为ThreeJS中的坐标
 function touch_crash_detect(){
     window.addEventListener('touchstart', (event) => {
-        let touch_object=new THREE.Vector2();
-        let touch = event.touches[0];
-        touch_object.x = (touch.clientX / window.innerWidth) * 2 - 1;
-        touch_object.y = -(touch.clientY / window.innerHeight) * 2 + 1;
-
-        raycaster.setFromCamera(touch_object, camera);
-        let intersects = raycaster.intersectObjects(scene.children, true);
-        if (intersects.length > 0) {
-            // console.log(intersects[0].object);
-            touch_on_object_name = intersects[0].object.name;
-        }
+        screen3D_to_3DCoord(event.touches[0].clientX, event.touches[0].clientY,camera, window.innerWidth, window.innerHeight);
     });
 }
 
@@ -531,14 +560,15 @@ function animate() {
     //调用onPointerMove
     onPointerMove();
 
-    //摇杆
-    createJoyStick();
+    // //摇杆
+    // createJoyStick();
+
 
     //调用moveAlongCurve
     // moveAlongCurve(guideMesh, curve);
 
     //触摸检测
-    touch_crash_detect();
+    // touch_crash_detect();
 
 
     if (mixer) {

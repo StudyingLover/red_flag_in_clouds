@@ -630,18 +630,12 @@ function touch_crash_detect(){
         // playerMesh.position.set(pos.x, pos.y, pos.z);
     });
 }
-let player_curve = new THREE.CatmullRomCurve3([
-    new THREE.Vector3(playerMesh.position.x, playerMesh.position.y, playerMesh.position.z),
-    new THREE.Vector3(pos.x, pos.y, pos.z),
-]);
 
 
 function animate() {
     requestAnimationFrame(animate);
-
     renderer.render(scene, camera);
 
-    // guideMesh.rotateY(-0.1);
 
     //调用onPointerMove
     onPointerMove();
@@ -653,8 +647,18 @@ function animate() {
     //调用moveAlongCurve
     // moveAlongCurve(guideMesh, curve);
 
-    //触摸检测
-    touch_crash_detect();
+    // console.log(playerMesh.position.x)
+
+    let player_next_pos=touch_crash_detect();
+    let player_cur_x=playerMesh.position.x;
+    let player_cur_y=playerMesh.position.y;
+    let player_cur_z=playerMesh.position.z;
+    let player_curve = new THREE.CatmullRomCurve3([
+        new THREE.Vector3(player_cur_x, player_cur_y, player_cur_z),
+        //获取当前点向量
+
+        new THREE.Vector3(player_next_pos.x, player_next_pos.y, player_next_pos.z),
+    ]);
     moveAlongCurve(playerMesh, player_curve);
 
     if (mixer) {

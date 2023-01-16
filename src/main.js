@@ -626,9 +626,14 @@ function touch_crash_detect(){
         if (pos.y!=0){
             pos.y = 0;
         }
-        playerMesh.position.set(pos.x, pos.y, pos.z);
+        return pos;
+        // playerMesh.position.set(pos.x, pos.y, pos.z);
     });
 }
+let player_curve = new THREE.CatmullRomCurve3([
+    new THREE.Vector3(playerMesh.position.x, playerMesh.position.y, playerMesh.position.z),
+    new THREE.Vector3(pos.x, pos.y, pos.z),
+]);
 
 
 function animate() {
@@ -650,7 +655,7 @@ function animate() {
 
     //触摸检测
     touch_crash_detect();
-
+    moveAlongCurve(playerMesh, player_curve);
 
     if (mixer) {
         mixer.update(0.02);

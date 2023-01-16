@@ -620,7 +620,7 @@ function createJoyStick() {
 
 //获取触摸点的坐标并转换为ThreeJS中的坐标
 function touch_crash_detect(){
-    window.addEventListener('touchstart', (event) => {
+    window.addEventListener('touchmove', (event) => {
         // screen3D_to_3DCoord(event.touches[0].clientX, event.touches[0].clientY,camera, window.innerWidth, window.innerHeight);
         let pos = get3DPosition(event.touches[0].clientX, event.touches[0].clientY, camera, scene, 1);
         if (pos.y!=0){
@@ -649,17 +649,23 @@ function animate() {
 
     // console.log(playerMesh.position.x)
 
-    let player_next_pos=touch_crash_detect();
-    let player_cur_x=playerMesh.position.x;
-    let player_cur_y=playerMesh.position.y;
-    let player_cur_z=playerMesh.position.z;
-    let player_curve = new THREE.CatmullRomCurve3([
-        new THREE.Vector3(player_cur_x, player_cur_y, player_cur_z),
-        //获取当前点向量
+    try{
+        let player_next_pos=touch_crash_detect();
+        let player_cur_x=playerMesh.position.x;
+        let player_cur_y=playerMesh.position.y;
+        let player_cur_z=playerMesh.position.z;
+        let player_curve = new THREE.CatmullRomCurve3([
+            new THREE.Vector3(player_cur_x, player_cur_y, player_cur_z),
+            //获取当前点向量
 
-        new THREE.Vector3(player_next_pos.x, player_next_pos.y, player_next_pos.z),
-    ]);
-    moveAlongCurve(playerMesh, player_curve);
+            new THREE.Vector3(player_next_pos.x, player_next_pos.y, player_next_pos.z),
+        ]);
+        moveAlongCurve(playerMesh, player_curve);
+    }
+    catch {
+        
+    }
+    
 
     if (mixer) {
         mixer.update(0.02);

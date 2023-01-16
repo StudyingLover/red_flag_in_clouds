@@ -1,7 +1,7 @@
 # 云中的红旗
 
 ## 项目说明
-
+![](https://raw.githubusercontent.com/StudyingLover/anything/main/a194c3c8174518a165536f93f041d98.png)
 ## 项目依赖
 - `./src/three.js`
 - `./src/GLTFLoader.js`

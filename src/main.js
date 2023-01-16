@@ -649,7 +649,7 @@ function animate() {
     // moveAlongCurve(guideMesh, curve);
 
     //触摸检测
-    // touch_crash_detect();
+    touch_crash_detect();
 
 
     if (mixer) {

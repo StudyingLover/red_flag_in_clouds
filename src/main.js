@@ -642,7 +642,7 @@ function animate() {
     onPointerMove();
 
     // //摇杆
-    // createJoyStick();
+    createJoyStick();
 
 
     //调用moveAlongCurve

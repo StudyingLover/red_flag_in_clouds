@@ -4,14 +4,14 @@
 ![](https://raw.githubusercontent.com/StudyingLover/anything/main/a194c3c8174518a165536f93f041d98.png)
 ## 项目依赖
 - `./src/three.js`
-- `./src/GLTFLoader.js`
-- `./src/joystick.js`
+- `https://cdn.jsdelivr.net/gh/kjdsakd/ThreeJS-tools/GLTFLoader.js`
+- `https://cdn.jsdelivr.net/gh/kjdsakd/ThreeJS-tools/joystick.js)`
 
 ## 文件结构
 ```
 .
-+--favicon.svg
 +--index.html
++--logo.png
 +--notfound.html
 +--readme.md
 │
@@ -23,6 +23,8 @@
 │  +--huizhanonline.html
 │  +--virtualanchor.html
 │  +--questions
+│  +--jump.html
+│  +--shejian.html
 └─resources
 │  +--sky.hdr
 │  +--sky2.hdr
@@ -42,10 +44,8 @@
 └─src
 │  +--GLTFLoader.js
 │  +--main.js
-│  +--test.js
 │  +--three.js
 │  +--vite-env.d.ts
-│  +--joystick.js
 ```
 
 ## 人物操作
@@ -73,7 +73,6 @@
   - `playerMesh.position.x,playerMesh.position.y,playerMesh.position.z` 主人物位置 
 - `guideMesh` npc模型
   - `guideMesh.position.x,guideMesh.position.y,guideMesh.position.z` npc位置
-- `curve` npc路径
 
 ## 函数和方法
 ### index.html
@@ -97,3 +96,6 @@
 4. 小游戏:https://github.com/wanghao221/wanghao221.github.io.git
 5. 问答:https://github.com/shumiao80/htmlgame-demo
 6. 公益404:https://www.freesion.com/article/2530927138/
+
+## 工具
+1. 网页转应用:https://gonative.io/

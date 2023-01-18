@@ -165,7 +165,7 @@ let isWalk = false;
 let isWalk_joystick = false;
 
 const playerHalfHeight = new THREE.Vector3(0, 0.8, 0);
-function idle2walk_forward(Mesh,Idle,Walk){
+function idle2walk_forward(Mesh, Idle, Walk) {
     //计算当前方向移动前后的向量
     const curPos = Mesh.position.clone();
     Mesh.translateZ(1);
@@ -189,7 +189,7 @@ function idle2walk_forward(Mesh,Idle,Walk){
     }
 }
 
-function idle2walk_back(Mesh,Idle,Walk){
+function idle2walk_back(Mesh, Idle, Walk) {
     //计算当前方向移动前后的向量
     const curPos = Mesh.position.clone();
     Mesh.translateZ(-1);
@@ -204,12 +204,12 @@ function idle2walk_back(Mesh,Idle,Walk){
     // console.log(raycasterFront)
     const collisionResultsFrontObjs = raycasterFront.intersectObjects(scene.children);//获取碰撞的物体
     // console.log(collisionResultsFrontObjs[0])
-    if (collisionResultsFrontObjs[0]){//如果有碰撞物体下面的碰撞检测判断才能正常运行，不加这个判断如果人物后方为空则不能后退
+    if (collisionResultsFrontObjs[0]) {//如果有碰撞物体下面的碰撞检测判断才能正常运行，不加这个判断如果人物后方为空则不能后退
         if (collisionResultsFrontObjs && collisionResultsFrontObjs[0] && collisionResultsFrontObjs[0].distance > 1) {
             Mesh.translateZ(-0.1);//
         }
     }
-    else{
+    else {
         Mesh.translateZ(-0.1);
     }
 
@@ -225,7 +225,7 @@ function control() {
     window.addEventListener('keydown', (e) => {
         if (e.key === 'w') {
 
-            idle2walk_forward(playerMesh,actionIdle,actionWalk);
+            idle2walk_forward(playerMesh, actionIdle, actionWalk);
             // //计算当前方向移动前后的向量
             // const curPos = playerMesh.position.clone();
             // playerMesh.translateZ(1);
@@ -250,7 +250,7 @@ function control() {
         }
         if (e.key === 's') {
             // playerMesh.translateZ(-0.1);
-            idle2walk_back(playerMesh,actionIdle,actionWalk);
+            idle2walk_back(playerMesh, actionIdle, actionWalk);
         }
 
         if (e.key === 'a') {
@@ -319,127 +319,20 @@ let preClientX;
 let preClientY;
 // let mouse;
 
-//根据当前相机的投影矩阵将点从屏幕空间 2D 转换为 3D 空间中的点
-//效果很烂，勉勉强强但是不稳定。感谢南航RM李霖杰提供的思路将z设为1
-function get3DPosition(x, y, camera, scene, hyper_z) {
-    var vector = new THREE.Vector3();
-    // calculate mouse position in normalized device coordinates
-    // (-1 to +1) for both components
-    vector.x = ( x / window.innerWidth ) * 2 - 1;
-    vector.y = - ( y / window.innerHeight ) * 2 + 1;
-    vector.z = hyper_z;
-
-    // unproject the vector
-    vector.unproject(camera);
-
-    // calculate the ray from the camera to the vector
-    var ray = new THREE.Raycaster(camera.position, vector.sub(camera.position).normalize());
-
-    // check for intersection with objects in the scene
-    var intersects = ray.intersectObjects(scene.children);
-    if (intersects.length > 0) {
-        return intersects[0].point;
-    }
-    else {
-        return null;
-    }
-}
-
-
-
-
-//chatGPT写的通过深度图采样，shader改深度缓冲的方式获取3d坐标，感谢上交苏辂提供的思路
-function convert2Dto3D(mouseX, mouseY, camera, width, height, scene) {
-    // 构建纹理
-    var depthTarget = new THREE.WebGLRenderTarget(width, height);
-    depthTarget.texture.minFilter = THREE.LinearFilter;
-
-    // 渲染深度图
-    renderer.render(scene, camera, depthTarget);
-    
-    // 创建着色器
-    var material = new THREE.ShaderMaterial({
-        uniforms: {
-            mouse: { value: new THREE.Vector2(mouseX, mouseY) },
-            depthMap: { value: depthTarget.texture },
-            projectionMatrix: { value: camera.projectionMatrix },
-            viewMatrix: { value: camera.matrixWorldInverse }
-        },
-        vertexShader: `
-            uniform vec2 mouse;
-            uniform mat4 projectionMatrix;
-            uniform mat4 viewMatrix;
-            uniform sampler2D depthMap;
-            varying vec4 pos;
-            void main() {
-                pos = vec4(position, 1.0);
-                gl_Position = projectionMatrix * viewMatrix * pos;
-            }
-        `,
-        fragmentShader: `
-            uniform vec2 mouse;
-            uniform sampler2D depthMap;
-            varying vec4 pos;
-            void main() {
-                float depth = texture2D(depthMap, mouse).r;
-                vec4 viewPos = vec4(mouse * 2.0 - 1.0, depth * 2.0 - 1.0, 1.0);
-                vec4 worldPos = viewMatrix * viewPos;
-                worldPos /= worldPos.w;
-                gl_FragColor = vec4(worldPos.xyz, 1.0);
-            }
-        `
-    });
-
-    // 创建一个平面作为渲染目标
-    var plane = new THREE.PlaneBufferGeometry(width, height);
-    var mesh = new THREE.Mesh(plane, material);
-    scene.add(mesh);
-
-    // 渲染一次着色器并获取结果
-    renderer.render(scene, camera);
-    var pixelBuffer = new Uint8Array(4);
-    renderer.readRenderTargetPixels(depthTarget, mouseX, height - mouseY, 1, 1, pixelBuffer);
-    var worldPos = new THREE.Vector3(
-        (pixelBuffer[0] / 255) * 2 - 1,
-        (pixelBuffer[1] / 255) * 2 - 1,
-        (pixelBuffer[2] / 255) * 2 - 1
-    );
-    worldPos.applyMatrix4(camera.matrixWorldInverse);
-    scene.remove(mesh);
-    return worldPos;
-}
 
 
 
 
 
-window.addEventListener('click', (event) => {
-    if (event.button === 0) {
-        let pos = get3DPosition(event.clientX, event.clientY, camera, scene, 1);
-        if (pos.y!=0){
-            pos.y = 0;
-        }
-        // let pos = convert2Dto3D(event.clientX, event.clientY, camera, window.innerWidth, window.innerHeight, scene);
-        playerMesh.position.set(pos.x, pos.y, pos.z);
-        console.log('mouse',event.clientX,event.clientY,'pos', pos );
-    }
-});
-
-
-
-
-
-
-
-    // if (preClientX && playerMesh) {
-    //     camera.rotateY(-(e.clientX - preClientX) * 0.01);
-    // }
-    // preClientX = e.clientX;
-    // if (preClientY && playerMesh) {
-    //     camera.rotateX(-(e.clientY - preClientY) * 0.01);
-    // }
-    // preClientY = e.clientY;
-    // console.log("mouse_position:",e.clientX, "," ,e.clientY);
+// if (preClientX && playerMesh) {
+//     camera.rotateY(-(e.clientX - preClientX) * 0.01);
+// }
+// preClientX = e.clientX;
+// if (preClientY && playerMesh) {
+//     camera.rotateX(-(e.clientY - preClientY) * 0.01);
+// }
+// preClientY = e.clientY;
+// console.log("mouse_position:",e.clientX, "," ,e.clientY);
 
 
 
@@ -598,7 +491,8 @@ let ajoystick;
 let move = {
     forward: 0,
     turn: 0
-  }
+}
+//左摇杆
 function createJoyStick() {
     ajoystick = new JOYSTICK({
         onMove: function (forward, turn) {
@@ -613,47 +507,76 @@ function createJoyStick() {
     if (move.forward != 0) {
         playerMesh.translateZ(move.forward * 0.06);
     }
-    if (move.turn !=0){
-        playerMesh.rotateY(move.turn*0.03);
+    if (move.turn != 0) {
+        playerMesh.rotateY(move.turn * 0.03);
+    }
+}
+//右摇杆
+let camera_turn = 0;
+let turn_joystick
+function create_joystick_turn() {
+    turn_joystick = new TURNJOYSTICK({
+        onMove: function (forward, turn) {
+            turn = -turn
+            // if (Math.abs(forward) < 0.3) forward = 0
+            if (Math.abs(turn) < 0.1) camera_turn = 0
+            camera_turn = turn
+            // console.log('forward', forward, 'turn', turn);
+        }
+    })
+    if (camera_turn != 0) {
+        camera.rotateY(camera_turn * 0.1);
     }
 }
 
+
 //获取触摸点的坐标并转换为ThreeJS中的坐标
-function touch_crash_detect(){
+function touch_crash_detect() {
     window.addEventListener('touchmove', (event) => {
         // screen3D_to_3DCoord(event.touches[0].clientX, event.touches[0].clientY,camera, window.innerWidth, window.innerHeight);
-        let pos = get3DPosition(event.touches[0].clientX, event.touches[0].clientY, camera, scene, 1);
-        if (pos.y!=0){
+        let pos = space_pos_convert.get3DPosition(event.touches[0].clientX, event.touches[0].clientY, camera, scene, 1);
+        if (pos.y != 0) {
             pos.y = 0;
         }
         return pos;
         // playerMesh.position.set(pos.x, pos.y, pos.z);
     });
 }
-
+// 点击移动，测试convert_2d_to_3d.js文件中的函数
+function click_move() {
+    window.addEventListener('click', (event) => {
+        if (event.button === 0) {
+            let pos = space_pos_convert.get3DPosition(event.clientX, event.clientY, camera, scene, 1);
+            if (pos.y != 0) {
+                pos.y = 0;
+            }
+            // let pos = convert2Dto3D(event.clientX, event.clientY, camera, window.innerWidth, window.innerHeight, scene);
+            playerMesh.position.set(pos.x, pos.y, pos.z);
+            // console.log('mouse',event.clientX,event.clientY,'pos', pos );
+        }
+    });
+}
 
 function animate() {
     requestAnimationFrame(animate);
     renderer.render(scene, camera);
 
 
+
     //调用onPointerMove
     onPointerMove();
 
-    // //摇杆
+    //摇杆
     createJoyStick();
+    create_joystick_turn();
 
 
-    //调用moveAlongCurve
-    // moveAlongCurve(guideMesh, curve);
 
-    // console.log(playerMesh.position.x)
-
-    try{
-        let player_next_pos=touch_crash_detect();
-        let player_cur_x=playerMesh.position.x;
-        let player_cur_y=playerMesh.position.y;
-        let player_cur_z=playerMesh.position.z;
+    try {
+        let player_next_pos = touch_crash_detect();
+        let player_cur_x = playerMesh.position.x;
+        let player_cur_y = playerMesh.position.y;
+        let player_cur_z = playerMesh.position.z;
         let player_curve = new THREE.CatmullRomCurve3([
             new THREE.Vector3(player_cur_x, player_cur_y, player_cur_z),
             //获取当前点向量
@@ -663,9 +586,9 @@ function animate() {
         moveAlongCurve(playerMesh, player_curve);
     }
     catch {
-        
+
     }
-    
+
 
     if (mixer) {
         mixer.update(0.02);

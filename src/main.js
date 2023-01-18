@@ -525,7 +525,7 @@ function create_joystick_turn() {
         }
     })
     if (camera_turn != 0) {
-        camera.rotateY(camera_turn * 0.1);
+        camera.rotateY(camera_turn * 0.03);
     }
 }
 

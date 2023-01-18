@@ -3,9 +3,7 @@
 ## 项目说明
 ![](https://raw.githubusercontent.com/StudyingLover/anything/main/a194c3c8174518a165536f93f041d98.png)
 ## 项目依赖
-- `./src/three.js`
-- `https://cdn.jsdelivr.net/gh/kjdsakd/ThreeJS-tools/GLTFLoader.js`
-- `https://cdn.jsdelivr.net/gh/kjdsakd/ThreeJS-tools/joystick.js)`
+ThreeJS
 
 ## 文件结构
 ```
@@ -33,16 +31,12 @@
 │  +--yanhua.mp4
 │  +--virtual_human.mp4
 |  +--models
-│  |  +--donuts.glb
-│  |  +--donuts_noanimation.glb
-│  |  +--donuts_原始未处理.glb
-│  |  +--player - noanimation.fbx
 │  |  +--player.glb
 │  |  +--zhanguan.glb
-│  |  +--场馆Day03.blend
 │
 └─src
-│  +--GLTFLoader.js
+│  +--joystick_turn.js
+│  +--joystick.js
 │  +--main.js
 │  +--three.js
 │  +--vite-env.d.ts
@@ -85,9 +79,6 @@
 - `onPointerMove` 检测鼠标点击到了哪个物体并输出，同时赋值给全局变量
 - `crossPlay` 动作切换函数
 - `control()` 键盘控制
-
-### huizhanonline.html
-无
 
 ## 参考项目
 1. 元宇宙搭建:https://www.bilibili.com/video/BV1EK411z78e?share_source=copy_web

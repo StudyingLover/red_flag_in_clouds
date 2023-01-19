@@ -2,7 +2,7 @@
 setTimeout(function() {
     
     while (true){
-        console.log(playerMesh.position);
+        // console.log(playerMesh.position);
 
     }
   }, 4000);

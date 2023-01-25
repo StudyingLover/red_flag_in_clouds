@@ -12,16 +12,16 @@ const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.shadowMap.enabled = true;//开启renderer阴影
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
-window.scene=scene;
+window.scene = scene;
 // //设置canvas大小，https://stackoverflow.com/questions/17507525/putting-three-js-animation-inside-of-div
-let container = document.getElementById( 'canvas2' );
+let container = document.getElementById('canvas2');
 // document.body.appendChild( container );
 container.appendChild(renderer.domElement);
 var factor = 1; // percentage of the screen
 var w = window.innerWidth * factor;
 var h = window.innerHeight * factor;
-renderer.setSize( w, h );
-container.appendChild( renderer.domElement );
+renderer.setSize(w, h);
+container.appendChild(renderer.domElement);
 
 
 camera.position.set(5, 10, 25);//设置相机初始位置
@@ -167,13 +167,85 @@ let isWalk_joystick = false;
 
 const playerHalfHeight = new THREE.Vector3(0, 0.8, 0);
 
+// 这里最开始是抽象出去的，但是isWalk作为一个全局变量不好传递，我比较菜没搞懂js怎么搞引用，所以就直接写在这里了
+function crossPlay(curAction, newAction) {
+    // curAction是现在正在播的动作，newAction是将要播的动作
+    curAction.fadeOut(0.3);
+    newAction.reset();
+    newAction.setEffectiveWeight(1);
+    newAction.play();
+    newAction.fadeIn(0.3);
+}
+
+function idle2walk_forward(Mesh, Idle, Walk) {
+    //计算当前方向移动前后的向量
+    const curPos = Mesh.position.clone();
+    Mesh.translateZ(1);
+    const frontPos = Mesh.position.clone();
+    Mesh.translateZ(-1);
+
+    //计算移动向量并归一化
+    const frontVector3 = frontPos.sub(curPos).normalize()
+
+    //碰撞检测
+    const raycasterFront = new THREE.Raycaster(Mesh.position.clone().add(playerHalfHeight), frontVector3);
+    const collisionResultsFrontObjs = raycasterFront.intersectObjects(scene.children);//获取碰撞的物体
+
+    if (collisionResultsFrontObjs[0]) {
+        if (collisionResultsFrontObjs && collisionResultsFrontObjs[0] && collisionResultsFrontObjs[0].distance > 1) {
+            Mesh.translateZ(0.1);
+        }
+    }
+    else {
+        Mesh.translateZ(0.1);
+    }
+
+
+    //动作切换
+    if (!isWalk) {
+        crossPlay(Idle, Walk);
+        isWalk = true;
+    }
+}
+
+function idle2walk_back(Mesh, Idle, Walk) {
+    //计算当前方向移动前后的向量
+    const curPos = Mesh.position.clone();
+    Mesh.translateZ(-1);
+    const frontPos = Mesh.position.clone();
+    Mesh.translateZ(1);
+
+    //计算移动向量并归一化
+    const frontVector3 = frontPos.sub(curPos).normalize()
+
+    //碰撞检测
+    const raycasterFront = new THREE.Raycaster(Mesh.position.clone().add(playerHalfHeight), frontVector3);
+    // console.log(raycasterFront)
+    const collisionResultsFrontObjs = raycasterFront.intersectObjects(scene.children);//获取碰撞的物体
+    // console.log(collisionResultsFrontObjs[0])
+    if (collisionResultsFrontObjs[0]) {//如果有碰撞物体下面的碰撞检测判断才能正常运行，不加这个判断如果人物后方为空则不能后退
+        if (collisionResultsFrontObjs && collisionResultsFrontObjs[0] && collisionResultsFrontObjs[0].distance > 1) {
+            Mesh.translateZ(-0.1);//
+        }
+    }
+    else {
+        Mesh.translateZ(-0.1);
+    }
+
+    //动作切换
+    if (!isWalk) {
+        player_actions.crossPlay(Idle, Walk);
+        isWalk = true;
+    }
+}
+
 
 //键盘控制
 function control() {
     window.addEventListener('keydown', (e) => {
         if (e.key === 'w') {
 
-            player_actions.idle2walk_forward(playerMesh, actionIdle, actionWalk);
+            idle2walk_forward(playerMesh, actionIdle, actionWalk);
             // //计算当前方向移动前后的向量
             // const curPos = playerMesh.position.clone();
             // playerMesh.translateZ(1);
@@ -198,7 +270,7 @@ function control() {
         }
         if (e.key === 's') {
             // playerMesh.translateZ(-0.1);
-            player_actions.idle2walk_back(playerMesh, actionIdle, actionWalk);
+            idle2walk_back(playerMesh, actionIdle, actionWalk);
         }
 
         if (e.key === 'a') {
@@ -235,11 +307,11 @@ function control() {
     })
     window.addEventListener('keyup', (e) => {
         if (e.key === 'w') {
-            player_actions.crossPlay(actionWalk, actionIdle);
+            crossPlay(actionWalk, actionIdle);
             isWalk = false;
         }
         if (e.key === 's') {
-            player_actions.crossPlay(actionWalk, actionIdle);
+            crossPlay(actionWalk, actionIdle);
             isWalk = false;
         }
     });
@@ -252,9 +324,8 @@ let preClientX;
 let preClientY;
 // let mouse;
 
-try
-{
-    windiw.player_pos=playerMesh.position;
+try {
+    windiw.player_pos = playerMesh.position;
 }
 catch {
 

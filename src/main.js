@@ -167,7 +167,8 @@ let isWalk_joystick = false;
 
 const playerHalfHeight = new THREE.Vector3(0, 0.8, 0);
 
-// 这里最开始是抽象出去的，但是isWalk作为一个全局变量不好传递，我比较菜没搞懂js怎么搞引用，所以就直接写在这里了
+// 这里crossPlay,idle2walk_forward,idle2walk_back最开始是抽象出去的，但是isWalk作为一个全局变量不好传递
+// 我比较菜没搞懂js怎么搞引用，所以就直接写在这里了.据说js是引用传递，但是我懒得试了。就留个坑在这里。
 function crossPlay(curAction, newAction) {
     // curAction是现在正在播的动作，newAction是将要播的动作
     curAction.fadeOut(0.3);
@@ -487,23 +488,42 @@ function onPointerMove() {
 }
 
 let t = 0;
-// //给定一条曲线，让特定的mesh按轨迹自动移动
-function moveAlongCurve(mesh, curve) {
+// 给定一条曲线，让特定的mesh按轨迹自动移动
+function moveAlongCurve(mesh, curve,v) {
 
     let pos = curve.getPoint(t);
     mesh.position.set(pos.x, pos.y, pos.z);
     mesh.lookAt(curve.getPoint(t + 0.01));
-    t += 0.003;
+    // t += 0.003;
+    t+=v;
     // console.log(t);
 }
-// //创建一条曲线
-let curve = new THREE.CatmullRomCurve3([
-    new THREE.Vector3(3, 0, 11.5),
-    new THREE.Vector3(3, 0, 10),
-    new THREE.Vector3(5, 0, 6),
-    new THREE.Vector3(5, 0, 0),
-    // new THREE.Vector3(0, 0, 11),
-]);
+
+// 给定一条曲线，让特定的mesh按轨迹跳跃(有bug，按下按键不能完成整个跳跃过程而是进行了一部分，是个坑)
+function jumpAlongCurve(mesh, curve,v) {
+
+    let pos = curve.getPoint(t);
+    mesh.position.set(pos.x, pos.y, pos.z);
+    // mesh.lookAt(curve.getPoint(t + 0.01));
+    // t += 0.003;
+    t+=v;
+    // console.log(t);
+}
+
+let playerMesh_jump_counter = 0;
+
+
+
+
+function rotateAroundObjectAxis(mesh1, mesh_center, angle) {
+    mesh1.position.sub(mesh_center.position);
+    mesh1.position.applyAxisAngle(new THREE.Vector3(0, 1, 0), angle);
+    mesh1.position.add(mesh_center.position);
+    mesh1.rotateOnAxis(new THREE.Vector3(0, 1, 0), angle);
+    return true;
+}
+
+
 
 
 //摇杆功能
@@ -546,22 +566,12 @@ function create_joystick_turn() {
     })
     if (camera_turn != 0) {
         camera.rotateY(camera_turn * 0.03);
+        // rotateAroundObjectAxis(camera, playerMesh, camera_turn * 0.01);
     }
 }
 
 
-//获取触摸点的坐标并转换为ThreeJS中的坐标
-function touch_crash_detect() {
-    window.addEventListener('touchmove', (event) => {
-        // screen3D_to_3DCoord(event.touches[0].clientX, event.touches[0].clientY,camera, window.innerWidth, window.innerHeight);
-        let pos = space_pos_convert.get3DPosition(event.touches[0].clientX, event.touches[0].clientY, camera, scene, 1);
-        if (pos.y != 0) {
-            pos.y = 0;
-        }
-        return pos;
-        // playerMesh.position.set(pos.x, pos.y, pos.z);
-    });
-}
+
 // 点击移动，测试convert_2d_to_3d.js文件中的函数
 function click_move() {
     window.addEventListener('click', (event) => {
@@ -579,7 +589,10 @@ function click_move() {
 
 
 
+
 function animate() {
+
+
     requestAnimationFrame(animate);
     renderer.render(scene, camera);
 
@@ -593,9 +606,9 @@ function animate() {
     create_joystick_turn();
 
 
-
+    // 触摸屏点击移动(无效ing)
     try {
-        let player_next_pos = touch_crash_detect();
+        let player_next_pos = space_pos_convert.touch_crash_detect();
         let player_cur_x = playerMesh.position.x;
         let player_cur_y = playerMesh.position.y;
         let player_cur_z = playerMesh.position.z;
@@ -611,6 +624,40 @@ function animate() {
 
     }
 
+    // playerMesh的坐标暴露在全局
+    try {
+        window.player_position_global = playerMesh.position;
+    }
+    catch {
+
+    }
+
+
+    // 程序运行一段时间后，playerMesh才可以被访问
+    if (playerMesh_jump_counter > 500) {
+        // 创建一条曲线
+        let curve = new THREE.CatmullRomCurve3([
+            new THREE.Vector3(playerMesh.position.x, 0, playerMesh.position.z),
+            new THREE.Vector3(playerMesh.position.x, 1, playerMesh.position.z)
+
+            // new THREE.Vector3(0, 0, 11),
+        ]);
+        window.addEventListener('keydown', (e) =>{
+            if(e.key == ' '){
+                jumpAlongCurve(playerMesh, curve,0.03);
+            }
+        });
+
+        // jumpAlongCurve(playerMesh, curve,0.03);
+
+    }
+    else {
+        playerMesh_jump_counter += 1;
+    }
+    if(playerMesh_jump_counter==500){
+        console.log('jump is ok');
+    }
+    
 
     if (mixer) {
         mixer.update(0.02);

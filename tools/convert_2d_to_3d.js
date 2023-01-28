@@ -87,8 +87,20 @@ const space_pos_convert = {
         worldPos.applyMatrix4(camera.matrixWorldInverse);
         scene.remove(mesh);
         return worldPos;
-    }
+    },
 
+    //获取触摸点的坐标并转换为ThreeJS中的坐标
+    touch_crash_detect: function touch_crash_detect() {
+        window.addEventListener('touchmove', (event) => {
+            // screen3D_to_3DCoord(event.touches[0].clientX, event.touches[0].clientY,camera, window.innerWidth, window.innerHeight);
+            let pos = space_pos_convert.get3DPosition(event.touches[0].clientX, event.touches[0].clientY, camera, scene, 1);
+            if (pos.y != 0) {
+                pos.y = 0;
+            }
+            return pos;
+            // playerMesh.position.set(pos.x, pos.y, pos.z);
+        });
+    }
 }
 
 window.space_pos_convert = space_pos_convert

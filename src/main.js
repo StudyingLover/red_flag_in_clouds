@@ -307,12 +307,7 @@ function control() {
         }
         
         console.log(playerMesh.position)
-        dis_1=((playerMesh.position.x-(3.673940))*(playerMesh.position.x-(-0.00106))+(playerMesh.position.y-0)*(playerMesh.position.y-0)+(playerMesh.position.z-(-18.170363))*(playerMesh.position.z-(-18.170363)))
-        if (dis_1<4)
-        {
-            console.log("到达目的地");
-            window.location.href = './html/huizhanonline.html';
-        }
+        
     })  
     window.addEventListener('keyup', (e) => {
         if (e.key === 'w') {
@@ -597,6 +592,32 @@ function click_move() {
 }
 
 
+function actions_after_5mins() {
+    // 创建一条曲线
+    let curve = new THREE.CatmullRomCurve3([
+        new THREE.Vector3(playerMesh.position.x, 0, playerMesh.position.z),
+        new THREE.Vector3(playerMesh.position.x, 1, playerMesh.position.z)
+
+        // new THREE.Vector3(0, 0, 11),
+    ]);
+    window.addEventListener('keydown', (e) => {
+        if (e.key == ' ') {
+            jumpAlongCurve(playerMesh, curve, 0.03);
+        }
+    });
+
+    // jumpAlongCurve(playerMesh, curve,0.03);
+
+    // 场馆跳转
+    dis_1 = ((playerMesh.position.x - (3.673940)) * (playerMesh.position.x - (-0.00106)) + (playerMesh.position.y - 0) * (playerMesh.position.y - 0) + (playerMesh.position.z - (-18.170363)) * (playerMesh.position.z - (-18.170363)))
+    if (dis_1 < 4) {
+        console.log("到达目的地");
+        window.location.href = './html/huizhanonline.html';
+    }
+    else {
+        console.log(dis_1)
+    }
+}
 
 
 function animate() {
@@ -643,21 +664,10 @@ function animate() {
 
 
     // 程序运行一段时间后，playerMesh才可以被访问
-    if (playerMesh_jump_counter > 500) {
-        // 创建一条曲线
-        let curve = new THREE.CatmullRomCurve3([
-            new THREE.Vector3(playerMesh.position.x, 0, playerMesh.position.z),
-            new THREE.Vector3(playerMesh.position.x, 1, playerMesh.position.z)
-
-            // new THREE.Vector3(0, 0, 11),
-        ]);
-        window.addEventListener('keydown', (e) =>{
-            if(e.key == ' '){
-                jumpAlongCurve(playerMesh, curve,0.03);
-            }
-        });
-
-        // jumpAlongCurve(playerMesh, curve,0.03);
+    if (playerMesh_jump_counter > 450) {
+        
+        actions_after_5mins();
+        
 
     }
     else {

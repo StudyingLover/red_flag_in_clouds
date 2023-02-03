@@ -178,7 +178,7 @@ function crossPlay(curAction, newAction) {
     newAction.fadeIn(0.3);
 }
 
-function idle2walk_forward(Mesh, Idle, Walk) {
+function idle2walk_forward(Mesh, Idle, Walk, factor=3) {
     //计算当前方向移动前后的向量
     const curPos = Mesh.position.clone();
     Mesh.translateZ(1);
@@ -194,11 +194,11 @@ function idle2walk_forward(Mesh, Idle, Walk) {
 
     if (collisionResultsFrontObjs[0]) {
         if (collisionResultsFrontObjs && collisionResultsFrontObjs[0] && collisionResultsFrontObjs[0].distance > 1) {
-            Mesh.translateZ(0.1);
+            Mesh.translateZ(0.1*factor);
         }
     }
     else {
-        Mesh.translateZ(0.1);
+        Mesh.translateZ(0.1*factor);
     }
 
 
@@ -209,7 +209,7 @@ function idle2walk_forward(Mesh, Idle, Walk) {
     }
 }
 
-function idle2walk_back(Mesh, Idle, Walk) {
+function idle2walk_back(Mesh, Idle, Walk, factor=3) {
     //计算当前方向移动前后的向量
     const curPos = Mesh.position.clone();
     Mesh.translateZ(-1);
@@ -226,16 +226,16 @@ function idle2walk_back(Mesh, Idle, Walk) {
     // console.log(collisionResultsFrontObjs[0])
     if (collisionResultsFrontObjs[0]) {//如果有碰撞物体下面的碰撞检测判断才能正常运行，不加这个判断如果人物后方为空则不能后退
         if (collisionResultsFrontObjs && collisionResultsFrontObjs[0] && collisionResultsFrontObjs[0].distance > 1) {
-            Mesh.translateZ(-0.1);//
+            Mesh.translateZ(-0.1*factor);//
         }
     }
     else {
-        Mesh.translateZ(-0.1);
+        Mesh.translateZ(-0.1*factor);
     }
 
     //动作切换
     if (!isWalk) {
-        player_actions.crossPlay(Idle, Walk);
+        crossPlay(Idle, Walk);
         isWalk = true;
     }
 }
@@ -305,7 +305,15 @@ function control() {
             guideMesh.remove(playerMesh);
             scene.add(playerMesh);
         }
-    })
+        
+        console.log(playerMesh.position)
+        dis_1=((playerMesh.position.x-(3.673940))*(playerMesh.position.x-(-0.00106))+(playerMesh.position.y-0)*(playerMesh.position.y-0)+(playerMesh.position.z-(-18.170363))*(playerMesh.position.z-(-18.170363)))
+        if (dis_1<4)
+        {
+            console.log("到达目的地");
+            window.location.href = './html/huizhanonline.html';
+        }
+    })  
     window.addEventListener('keyup', (e) => {
         if (e.key === 'w') {
             crossPlay(actionWalk, actionIdle);
@@ -434,11 +442,11 @@ catch {
 // })
 
 
-new THREE.GLTFLoader().load('../resources/models/gallery1.glb', (gltf) => {
+new THREE.GLTFLoader().load('../resources/models/test1.glb', (gltf) => {
 
     // console.log(gltf);
     scene.add(gltf.scene);
-
+    gltf.scene.position.set(0, -5, -60);
     mixer = new THREE.AnimationMixer(gltf.scene);
     const clips = gltf.animations; // 播放所有动画
     clips.forEach(function (clip) {
@@ -500,6 +508,7 @@ function moveAlongCurve(mesh, curve,v) {
 }
 
 // 给定一条曲线，让特定的mesh按轨迹跳跃(有bug，按下按键不能完成整个跳跃过程而是进行了一部分，是个坑)
+// 猜测修改方式是给t设置一个上限，当t达到上限时，说明跳跃结束
 function jumpAlongCurve(mesh, curve,v) {
 
     let pos = curve.getPoint(t);

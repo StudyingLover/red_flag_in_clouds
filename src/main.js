@@ -441,7 +441,7 @@ new THREE.GLTFLoader().load('../resources/models/test1.glb', (gltf) => {
 
     // console.log(gltf);
     scene.add(gltf.scene);
-    gltf.scene.position.set(0, -5, -60);
+    gltf.scene.position.set(0, -1, -60);
     mixer = new THREE.AnimationMixer(gltf.scene);
     const clips = gltf.animations; // 播放所有动画
     clips.forEach(function (clip) {
@@ -611,8 +611,8 @@ function actions_after_5mins() {
     // 场馆跳转
     dis_1 = ((playerMesh.position.x - (3.673940)) * (playerMesh.position.x - (-0.00106)) + (playerMesh.position.y - 0) * (playerMesh.position.y - 0) + (playerMesh.position.z - (-18.170363)) * (playerMesh.position.z - (-18.170363)))
     if (dis_1 < 4) {
-        console.log("到达目的地");
-        window.location.href = './html/huizhanonline.html';
+        // console.log("到达目的地");
+        window.location.href = 'https://studyinglover.com';
     }
     else {
         console.log(dis_1)

@@ -90,6 +90,7 @@ const lookTarget = new THREE.Vector3(0, 2, 0);
 new THREE.GLTFLoader().load('../resources/models/player.glb', (gltf) => {
     playerMesh = gltf.scene;
     scene.add(gltf.scene);//把模型添加到场景
+    THREE.Cache.add("player", playerMesh);
 
     playerMesh.traverse((child) => {
         child.receiveShadow = true;
@@ -458,6 +459,7 @@ new THREE.GLTFLoader().load('../resources/models/scene.glb', (gltf) => {
 
     // console.log(gltf);
     scene.add(gltf.scene);
+    THREE.Cache.add("scene", gltf.scene);
     // gltf.scene.position.set(0, -1, -60);
     mixer = new THREE.AnimationMixer(gltf.scene);
     const clips = gltf.animations; // 播放所有动画
@@ -627,7 +629,7 @@ function actions_after_5mins() {
 
     // 场馆跳转
     dis_1 = ((playerMesh.position.x - (3.673940)) * (playerMesh.position.x - (-0.00106)) + (playerMesh.position.y - 0) * (playerMesh.position.y - 0) + (playerMesh.position.z - (-18.170363)) * (playerMesh.position.z - (-18.170363)))
-    if (dis_1 < 4) {
+    if (dis_1 < 1) {
         // console.log("到达目的地");
         window.location.href = 'https://studyinglover.com';
     }
@@ -636,7 +638,7 @@ function actions_after_5mins() {
     }
 
     dis_2 = ((playerMesh.position.x - (19.67288)) * (playerMesh.position.x - (19.67288)) + (playerMesh.position.y - 0) * (playerMesh.position.y - 0) + (playerMesh.position.z - (0.31499)) * (playerMesh.position.z - (0.31499)))
-    if (dis_2 < 4) {
+    if (dis_2 < 1) {
         // console.log("到达目的地");
         window.location.href = 'https://studyinglover.com';
     }
@@ -645,7 +647,7 @@ function actions_after_5mins() {
     }
 
     dis_3 = ((playerMesh.position.x - (-6.54805)) * (playerMesh.position.x - (-6.54805)) + (playerMesh.position.y - 0) * (playerMesh.position.y - 0) + (playerMesh.position.z - (24.96547)) * (playerMesh.position.z - (24.96547)))
-    if (dis_3 < 4) {
+    if (dis_3 < 1) {
         // console.log("到达目的地");
         window.location.href = 'https://studyinglover.com';
     }
@@ -654,7 +656,7 @@ function actions_after_5mins() {
     }
 
     dis_4 = ((playerMesh.position.x - (-23.41244)) * (playerMesh.position.x - (-23.41244)) + (playerMesh.position.y - 0) * (playerMesh.position.y - 0) + (playerMesh.position.z - (0.376832)) * (playerMesh.position.z - (0.376832)))
-    if (dis_4 < 4) {
+    if (dis_4 < 1) {
         // console.log("到达目的地");
         window.location.href = 'https://studyinglover.com';
     }
@@ -663,12 +665,23 @@ function actions_after_5mins() {
     }
 }
 
+function render() {
+    renderer.render(scene, camera);
+}
 
+var lastTime = 0
 function animate() {
 
 
     requestAnimationFrame(animate);
-    renderer.render(scene, camera);
+    var currentTime = performance.now();
+    var elapsedTime = currentTime - lastTime;
+    
+    if (elapsedTime > 16) { // Limit to 60 frames per second
+        lastTime = currentTime - (elapsedTime % 16);
+        render();
+    }
+    
 
 
 
@@ -727,9 +740,6 @@ function animate() {
     }
     if (playerMixer) {
         playerMixer.update(0.015);
-    }
-    if (guideMixer) {
-        guideMixer.update(0.015);
     }
 }
 

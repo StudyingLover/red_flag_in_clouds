@@ -7,7 +7,7 @@ let touch_on_object_name;//触摸所在的物体名称
 
 //创建场景，摄像机，渲染器
 const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.01, 50);
+const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.01, 500);
 const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.shadowMap.enabled = true;//开启renderer阴影
 renderer.setSize(window.innerWidth, window.innerHeight);
@@ -30,10 +30,10 @@ camera.position.set(5, 10, 25);//设置相机初始位置
 
 scene.background = new THREE.Color(0.2, 0.2, 0.2);//添加背景
 
-const ambientLight = new THREE.AmbientLight(0xffffff, 10);
-scene.add(ambientLight);
+const ambientLight = new THREE.AmbientLight(0xffffff, 2);
+// scene.add(ambientLight);
 
-const directionLight = new THREE.DirectionalLight(0xffffff, 10);//场地灯光
+const directionLight = new THREE.DirectionalLight(0xffffff, 2);//场地灯光
 scene.add(directionLight);
 
 // directionLight.position.set (10, 10, 10);
@@ -49,12 +49,29 @@ directionLight.shadow.mapSize.height = 2048;
 //设置阴影相机参数,远近，大小，不在范围内显示不出来
 const shadowDistance = 20;
 directionLight.shadow.camera.near = 0.1;
-directionLight.shadow.camera.far = 400;
+directionLight.shadow.camera.far = 4000;
 directionLight.shadow.camera.left = -shadowDistance;
 directionLight.shadow.camera.right = shadowDistance;
 directionLight.shadow.camera.top = shadowDistance;
 directionLight.shadow.camera.bottom = -shadowDistance;
 directionLight.shadow.bias = -0.001;
+
+// 图片的排放顺序依次是：x轴正方向-x轴负方向-y轴正方向-y轴负方向-z轴正方向-z轴负方向；
+// 按照Three.js创建的默认坐标系中，图片对应的方位是：右侧-左侧-上边-下边-前边-后边；
+// 图片宽高需要相等
+// https://blog.51cto.com/speciallist/5717092
+// scene.background
+//  = new THREE.CubeTextureLoader().setPath('../').load( [
+//                 'logo.png',
+//                 'logo.png',
+//                 'logo.png',
+//                 'logo.png',
+//                 'logo.png',
+//                 'logo.png'
+//             ] );
+
+
+scene.background = new THREE.Color(0xffffff);
 
 
 // const boxGeometry = new THREE.BoxGeometry(1,1,1);
@@ -119,33 +136,33 @@ new THREE.GLTFLoader().load('../resources/models/player.glb', (gltf) => {
 
 
 
-new THREE.GLTFLoader().load('../resources/models/player.glb', (guide) => {
-    guideMesh = guide.scene;
-    scene.add(guide.scene);
-    guideMesh.traverse((child) => {
-        child.receiveShadow = true;
-        child.castShadow = true;
-    })
+// new THREE.GLTFLoader().load('../resources/models/player.glb', (guide) => {
+//     guideMesh = guide.scene;
+//     scene.add(guide.scene);
+//     guideMesh.traverse((child) => {
+//         child.receiveShadow = true;
+//         child.castShadow = true;
+//     })
 
-    guideMesh.position.set(3, 0.2, 11.5);//人物初始位置
-    guideMesh.rotateY(Math.PI);//人物初始旋转pi
-    // guideMesh.position.set(-5, 3, 11.5);
+//     guideMesh.position.set(3, 0.2, 11.5);//人物初始位置
+//     guideMesh.rotateY(Math.PI);//人物初始旋转pi
+//     // guideMesh.position.set(-5, 3, 11.5);
 
-    // const pointLight = new THREE.PointLight(0xffffff, 1.5);
-    // playerMesh2.add(pointLight);
-    // pointLight.position.set(0, 1.8, -1);
+//     // const pointLight = new THREE.PointLight(0xffffff, 1.5);
+//     // playerMesh2.add(pointLight);
+//     // pointLight.position.set(0, 1.8, -1);
 
-    guideMixer = new THREE.AnimationMixer(guide.scene);
+//     guideMixer = new THREE.AnimationMixer(guide.scene);
 
-    const clipWalk = THREE.AnimationUtils.subclip(guide.animations[0], 'walk', 0, 30);
-    guide_actionWalk = guideMixer.clipAction(clipWalk);
-    // guide_actionWalk.play();
+//     const clipWalk = THREE.AnimationUtils.subclip(guide.animations[0], 'walk', 0, 30);
+//     guide_actionWalk = guideMixer.clipAction(clipWalk);
+//     // guide_actionWalk.play();
 
-    const clipIdle = THREE.AnimationUtils.subclip(guide.animations[0], 'idle', 31, 281);
-    guide_actionIdle = guideMixer.clipAction(clipIdle);
-    guide_actionIdle.play();
+//     const clipIdle = THREE.AnimationUtils.subclip(guide.animations[0], 'idle', 31, 281);
+//     guide_actionIdle = guideMixer.clipAction(clipIdle);
+//     guide_actionIdle.play();
 
-});
+// });
 
 //鼠标测试
 // window.addEventListener('click', function (e) {
@@ -437,11 +454,11 @@ catch {
 // })
 
 
-new THREE.GLTFLoader().load('../resources/models/test1.glb', (gltf) => {
+new THREE.GLTFLoader().load('../resources/models/scene.glb', (gltf) => {
 
     // console.log(gltf);
     scene.add(gltf.scene);
-    gltf.scene.position.set(0, -1, -60);
+    // gltf.scene.position.set(0, -1, -60);
     mixer = new THREE.AnimationMixer(gltf.scene);
     const clips = gltf.animations; // 播放所有动画
     clips.forEach(function (clip) {
@@ -615,7 +632,34 @@ function actions_after_5mins() {
         window.location.href = 'https://studyinglover.com';
     }
     else {
-        console.log(dis_1)
+        // console.log(dis_1)
+    }
+
+    dis_2 = ((playerMesh.position.x - (19.67288)) * (playerMesh.position.x - (19.67288)) + (playerMesh.position.y - 0) * (playerMesh.position.y - 0) + (playerMesh.position.z - (0.31499)) * (playerMesh.position.z - (0.31499)))
+    if (dis_2 < 4) {
+        // console.log("到达目的地");
+        window.location.href = 'https://studyinglover.com';
+    }
+    else {
+        // console.log(dis_1)
+    }
+
+    dis_3 = ((playerMesh.position.x - (-6.54805)) * (playerMesh.position.x - (-6.54805)) + (playerMesh.position.y - 0) * (playerMesh.position.y - 0) + (playerMesh.position.z - (24.96547)) * (playerMesh.position.z - (24.96547)))
+    if (dis_3 < 4) {
+        // console.log("到达目的地");
+        window.location.href = 'https://studyinglover.com';
+    }
+    else {
+        // console.log(dis_1)
+    }
+
+    dis_4 = ((playerMesh.position.x - (-23.41244)) * (playerMesh.position.x - (-23.41244)) + (playerMesh.position.y - 0) * (playerMesh.position.y - 0) + (playerMesh.position.z - (0.376832)) * (playerMesh.position.z - (0.376832)))
+    if (dis_4 < 4) {
+        // console.log("到达目的地");
+        window.location.href = 'https://studyinglover.com';
+    }
+    else {
+        // console.log(dis_1)
     }
 }
 
